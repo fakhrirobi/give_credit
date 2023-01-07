@@ -1,0 +1,16 @@
+artifact_uri: ../give_credit/give_me_credit/mlruns/0/8c711c64565c44b98bc7f1e052bdb0d9/artifacts
+deleted_time: 1672510706011
+end_time: 1672508876769
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+run_id: 8c711c64565c44b98bc7f1e052bdb0d9
+run_name: fourth_exp_base
+run_uuid: 8c711c64565c44b98bc7f1e052bdb0d9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1672508876603
+status: 3
+tags: []
+user_id: fakhri

@@ -1,0 +1,15 @@
+artifact_uri: ../give_credit/mlruns/0/b7d145b9aee24f16a69a1a4180279e6a/artifacts
+end_time: 1672515442778
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b7d145b9aee24f16a69a1a4180279e6a
+run_name: sixth_tuned
+run_uuid: b7d145b9aee24f16a69a1a4180279e6a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1672515441121
+status: 3
+tags: []
+user_id: fakhri

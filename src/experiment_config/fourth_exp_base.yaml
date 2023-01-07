@@ -1,0 +1,32 @@
+
+
+
+feature_engineering : 
+  LogDebtRatio : {
+    feature_source : DebtRatio,
+    description : 
+            The form log np.log1p(DebtRatio)
+  }
+  LogIncome : {
+    feature_source : MonthlyIncome,
+    description : 
+            The form log np.log1p(MonthlyIncome)
+  }
+  log_RevolvingUtilizationOfUnsecuredLines : {
+    feature_source : RevolvingUtilizationOfUnsecuredLines,
+    description : 
+            The form log np.log1p(RevolvingUtilizationOfUnsecuredLines)
+  }
+
+
+preprocessing_step : 
+    NumberOfDependents : {
+    feature_source : NumberOfDependents,
+    description : 
+            Filling Missing Values based on median value on training data 
+  }
+    MonthlyIncome : {
+    feature_source : MonthlyIncome,
+    description : 
+            Filling Missing Values based on median value on training data 
+  }

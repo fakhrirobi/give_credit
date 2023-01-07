@@ -1,0 +1,15 @@
+artifact_uri: ../give_credit/mlruns/0/4f7d8e2b4fbc4e4b9365767cfc8d8911/artifacts
+end_time: 1672508234033
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 4f7d8e2b4fbc4e4b9365767cfc8d8911
+run_name: second_exp
+run_uuid: 4f7d8e2b4fbc4e4b9365767cfc8d8911
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1672508229338
+status: 3
+tags: []
+user_id: fakhri

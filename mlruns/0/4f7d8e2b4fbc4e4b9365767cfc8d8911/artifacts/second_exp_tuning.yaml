@@ -1,0 +1,33 @@
+params : 
+  lambda_l2: 4.616060021789715 
+  num_leaves: 149 
+  max_depth: 8 
+  feature_fraction: 0.6697915939857978
+  bagging_fraction: 0.72950597043579 
+  bagging_freq: 1 
+  min_child_samples: 81
+
+feature_engineering : 
+  LogDebtRatio : {
+    feature_source : DebtRatio,
+    description : 
+            The form log np.log1p(DebtRatio)
+  }
+  log_RevolvingUtilizationOfUnsecuredLines : {
+    feature_source : RevolvingUtilizationOfUnsecuredLines,
+    description : 
+            The form log np.log1p(RevolvingUtilizationOfUnsecuredLines)
+  }
+
+
+preprocessing_step : 
+    NumberOfDependents : {
+    feature_source : NumberOfDependents,
+    description : 
+            Filling Missing Values based on median value on training data 
+  }
+    MonthlyIncome : {
+    feature_source : MonthlyIncome,
+    description : 
+            Filling Missing Values based on median value on training data 
+  }

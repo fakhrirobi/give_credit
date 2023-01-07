@@ -10,8 +10,8 @@ from lightgbm import LGBMClassifier
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 from sklearn import metrics
 
-DEFAULT_MODEL_PATH = "give_me_credit/give_me_credit/models/LGBMClassifier_fourth_exp_tuned.joblib"
-from src.features.feature_eng import feature_engineering_process
+DEFAULT_MODEL_PATH = "/models/LGBMClassifier_fourth_exp_tuned.joblib"
+import src.features.feature_eng.feature_engineering_process as feature_engineering_process
 from ..utils import load_config, path_checker
 
 # set logging mechanism to inform the progress of data wrangling

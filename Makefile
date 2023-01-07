@@ -7,9 +7,9 @@
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
-PROJECT_NAME = give_credit
-PYTHON_INTERPRETER = python3
-
+PROJECT_NAME = give_me_credit
+PYTHON_INTERPRETER = python3  
+BASE_DATA_DIR = 
 ifeq (,$(shell which conda))
 HAS_CONDA=False
 else
@@ -26,17 +26,32 @@ requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
 ## Make Dataset
-data: requirements
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
-
+data: 
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py --raw_input_path=data/raw/cs-training.csv \
+	 --interim_output_path=data/interim/interim_training_forth_exp_tuned.csv \
+	 --processed_output_path=data/processed/processed_training_forth_exp_tuned.csv \
+	  --experiment_name=fourth_exp_tuned --training_req=True
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py --raw_input_path=data/raw/cs-test.csv \
+	--interim_output_path=data/interim/interim_test_forth_exp_tuned.csv \
+	--processed_output_path=data/processed/processed_test_forth_exp_tuned.csv \
+	 --experiment_name=fourth_exp_tuned --training_req=False
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-
+	black .
+tracking_server : 
+	mlflow server --backend-store-uri sqlite:///mlflow.db --backend-store-uri ./mlruns
 ## Lint using flake8
 lint:
 	flake8 src
+
+
+train : 
+	$(PYTHON_INTERPRETER) src/models/train_model.py  --experiment_name=$(EXP_NAME) --training_data_path=$(TRAINING_PATH) --config_path=$(PARAM_PATH)
+
+predict_batches : 
+	$(PYTHON_INTERPRETER) src/models/predict_model.py  batch_inference --file_path=../give_me_credit/data/processed/test_processed.csv
 
 ## Upload Data to S3
 sync_data_to_s3:
