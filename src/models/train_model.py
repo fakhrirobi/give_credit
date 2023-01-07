@@ -6,26 +6,21 @@ import sys
 import joblib
 import yaml
 import argparse
-from pathlib import Path
+
 from datetime import datetime
 import mlflow
-from mlflow import log_metric, log_param, log_artifacts
+import config.path_config as path_config
 from mlflow.tracking import MlflowClient
 from mlflow.entities import Metric, Param, RunTag
-from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn import metrics
-from sklearn.ensemble import RandomForestClassifier
+
 from lightgbm import LGBMClassifier
 
 from src.utils.load_config import load_yaml
-from src.utils.path_checker import (
-    csv_extension_checker,
-    yaml_extension_checker,
-    check_is_file,
-)
+from src.utils import path_checker
 
 
-# set logging mechanism to inform the progress of data wrangling
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter(
     fmt="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
@@ -41,7 +36,8 @@ logger.setLevel(logging.INFO)
 TARGET = "SeriousDlqin2yrs"
 
 
-MODEL_BASE_PATH = "../give_me_credit/models/"
+
+MODEL_BASE_PATH = os.path.join(path_config.ROOT_DIR,'models')
 
 NFOLD = 5
 FOLD = StratifiedKFold(NFOLD)
@@ -49,13 +45,7 @@ FOLD = StratifiedKFold(NFOLD)
 
 def initialize_argparse():
     parser = argparse.ArgumentParser()
-    # adding argument for each method
-    # parser.add_argument(
-    #     "--save_model",
-    #     choices=["True", "False"],
-    #     help="Whether to save model into pickle or not ",
-    #     required=True,
-    # )
+
     parser.add_argument(
         "--experiment_name",
         type=str,
@@ -120,8 +110,8 @@ def train_model(training_path, experiment_name, config_path):
         mlflow.set_tracking_uri("http://127.0.0.1:5000")
         # read data
 
-        check_is_file(training_path, create_file=False)
-        csv_extension_checker(training_path)
+        path_checker.check_is_file(training_path, create_file=False)
+        path_checker.csv_extension_checker(training_path)
         mlflow.log_artifact(training_path)
         train_data = pd.read_csv(training_path)
 
@@ -129,8 +119,8 @@ def train_model(training_path, experiment_name, config_path):
         X = train_data.drop(TARGET, axis=1)
         Y = train_data[TARGET]
         # replace params from yaml_file
-        check_is_file(config_path)
-        yaml_extension_checker(config_path)
+        path_checker.check_is_file(config_path)
+        path_checker.yaml_extension_checker(config_path)
         params = (
             load_yaml(config_path)["params"]
             if "params" in load_yaml(config_path).keys()

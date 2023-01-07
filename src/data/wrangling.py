@@ -83,8 +83,9 @@ def wrangling_data(data:pd.DataFrame,params_path:str,training_req:bool=False):
             if "SeriousDlqin2yrs" not in data.columns.tolist() :
                 raise AssertionError("Train Columns Doesnot contains TARGET Column : SeriousDlqin2yrs")
             return data
-        return data
         validation_features.validate_wrangling_output_col(data=data,params_path=params_path)
+        return data
+        
     except BaseException as error:
         logger.exception(f"Process Encountered Errot at Data Wrangling Process : {error}")
 

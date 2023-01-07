@@ -25,8 +25,9 @@ def validate_wrangling_output_col(data: pd.DataFrame,
     # col_dtypes_reference = dict(ChainMap(*data_wrangling_output_dtypes))
     reference_col_names = list(data_wrangling_output_dtypes.keys())
     differences = list(
-        set(reference_col_names).symmetric_difference(data.columns.tolist())
+        set(reference_col_names).symmetric_difference(set(data.columns.tolist()))
     )
+    print('differences : ',differences)
     for dif in differences:
         if dif == TARGET_COL:
             continue
@@ -44,7 +45,7 @@ def validate_wrangling_output_col(data: pd.DataFrame,
             )
 
     
-    return True
+
 
 def validate_feature_engineering_output_col(
     data: pd.DataFrame, params_path: os.PathLike
@@ -75,4 +76,3 @@ def validate_feature_engineering_output_col(
                 f"Found not same dtypes at column{col}.It supposed to be dtpes {reference_dtypes}.Provided {data[col].dtypes}"
             )
 
-    return True

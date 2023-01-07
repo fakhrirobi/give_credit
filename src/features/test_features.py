@@ -1,12 +1,15 @@
 import pandas as pd 
 import numpy as np
-import pytest 
+import pytest
+import os 
 import src.features.feature_eng as feature_eng
-INTERIM_TEST_DATA = 'give_credit/data/interim/interim_test_forth_exp_tuned.csv'
-INTERIM_TRAINING_DATA = 'give_credit/data/interim/interim_training_forth_exp_tuned.csv'
+import config.path_config as path_config
+
+INTERIM_TEST_DATA = os.path.join(path_config.ROOT_DIR,'data','interim','interim_test_forth_exp_tuned.csv')
+INTERIM_TRAINING_DATA = os.path.join(path_config.ROOT_DIR,'data','interim','interim_training_forth_exp_tuned.csv')
 data3 = pd.read_csv(INTERIM_TRAINING_DATA)
 data4 = pd.read_csv(INTERIM_TEST_DATA)
-PARAMS_PATH = 'give_credit/src/experiment_config/fourth_exp_tuned.yaml'
+PARAMS_PATH = os.path.join(path_config.ROOT_DIR,'src','experiment_config','fourth_exp_tuned.yaml')
 def ramdomize_col_drop(data:pd.DataFrame) :
      cols = list(data.columns)
      random_idx = np.random.randint(low=0,high=len(cols)-1)

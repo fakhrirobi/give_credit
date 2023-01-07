@@ -1,18 +1,14 @@
 import pandas as pd
-import numpy as np
-import os
 import logging
 import joblib
 import sys
 import argparse
-from datetime import datetime
-from lightgbm import LGBMClassifier
-from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
-from sklearn import metrics
+
 
 DEFAULT_MODEL_PATH = "/models/LGBMClassifier_fourth_exp_tuned.joblib"
-import src.features.feature_eng.feature_engineering_process as feature_engineering_process
-from ..utils import load_config, path_checker
+from src.features.feature_eng import feature_engineering_process
+import src.utils.load_config as load_config
+import src.utils.path_checker as path_checker
 
 # set logging mechanism to inform the progress of data wrangling
 logger = logging.getLogger(__name__)
