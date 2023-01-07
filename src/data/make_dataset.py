@@ -67,8 +67,10 @@ def build_data(
     Function to run data preparation before training model
 
     Args:
-        experiment_name (str): experiment_name. Should be the same as the yaml file used
-        training_req (os.PathLike): True if you want to create data for training  has target, False if has no target (inference)
+        experiment_name (str): experiment_name.
+        Should be the same as the yaml file used.
+        training_req (os.PathLike): True if you want to create data for training  has target,
+        False if has no target (inference)
         raw_input_path (os.PathLike): Raw File Location
         interim_output_path (os.PathLike, optional): _description_. Defaults to None.
         processed_output_path (os.PathLike): Filename / Path to store processed data
@@ -86,7 +88,9 @@ def build_data(
         experiment_config_path = os.path.join(
             BASE_CONFIG_YML_PATH, f"{experiment_name}.yaml"
         )
-        wrangled_data = wrangling.wrangling_data(data,training_req=training_req,params_path=experiment_config_path)
+        wrangled_data = wrangling.wrangling_data(
+            data, training_req=training_req, params_path=experiment_config_path
+        )
 
         # validation_features.validate_wrangling_output_col(
         #     data=wrangled_data, params_path=experiment_config_path
@@ -94,20 +98,21 @@ def build_data(
         if interim_output_path:
             utils.path_checker.csv_extension_checker(interim_output_path)
             wrangled_data.to_csv(
-                interim_output_path,index=False
+                interim_output_path, index=False
             )  # needs validation ,still assumed the path ext is csv
 
-        feature_engineered_data = feature_eng.feature_engineering_process(data=wrangled_data,params_path=experiment_config_path)
-        
+        feature_engineered_data = feature_eng.feature_engineering_process(
+            data=wrangled_data, params_path=experiment_config_path
+        )
+
         # validation_features.validate_feature_engineering_output_col(
-        #     data=feature_engineered_data, 
+        #     data=feature_engineered_data,
         # )
         utils.path_checker.csv_extension_checker(processed_output_path)
-        feature_engineered_data.to_csv(processed_output_path,index=False)
+        feature_engineered_data.to_csv(processed_output_path, index=False)
 
         logger.info(
-            f"""Success Creating Dataset. 
-                    Processed Dataset in {processed_output_path}"""
+            f"""Success Creating Dataset.Processed Dataset in {processed_output_path}"""
         )
     except BaseException:
         logger.exception("Error Founded at Making Dataset")

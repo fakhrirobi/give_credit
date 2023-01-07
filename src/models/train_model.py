@@ -4,7 +4,6 @@ import os
 import logging
 import sys
 import joblib
-import yaml
 import argparse
 
 from datetime import datetime
@@ -36,8 +35,7 @@ logger.setLevel(logging.INFO)
 TARGET = "SeriousDlqin2yrs"
 
 
-
-MODEL_BASE_PATH = os.path.join(path_config.ROOT_DIR,'models')
+MODEL_BASE_PATH = os.path.join(path_config.ROOT_DIR, "models")
 
 NFOLD = 5
 FOLD = StratifiedKFold(NFOLD)
@@ -161,7 +159,7 @@ def train_model(training_path, experiment_name, config_path):
             mlflow.log_artifact(config_path)
         logger.info("SUCESSFULLY SAVED MODEL")
 
-    except BaseException as error:
+    except BaseException:
         logger.exception("Error Occured During Training")
 
 

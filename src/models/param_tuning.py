@@ -7,7 +7,7 @@ import sys
 import argparse
 from datetime import datetime
 from lightgbm import LGBMClassifier
-from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn import metrics
 
 import optuna

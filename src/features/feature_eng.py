@@ -1,9 +1,8 @@
-import pandas as pd
 import numpy as np
-import os
 import logging
 import sys
 import src.features.validation_features as validation_features
+
 
 # set logging mechanism to inform the progress of data wrangling
 logger = logging.getLogger(__name__)
@@ -31,7 +30,7 @@ def log_revolvingrate(data, col="RevolvingUtilizationOfUnsecuredLines"):
     return np.log1p(data["RevolvingUtilizationOfUnsecuredLines"])
 
 
-def feature_engineering_process(data,params_path):
+def feature_engineering_process(data, params_path):
     logger.info("PROCESS STARTED")
     try:
         data["LogDebtRatio"] = data.pipe(log_debt_ratio, col="DebtRatio")
@@ -51,10 +50,12 @@ def feature_engineering_process(data,params_path):
             axis=1,
             inplace=True,
         )
-        validation_features.validate_feature_engineering_output_col(data=data,params_path=params_path)
+        validation_features.validate_feature_engineering_output_col(
+            data=data, params_path=params_path
+        )
         return data
-       
-    except BaseException as error:
+
+    except BaseException:
         logger.exception("Error Encountered at Feature Engineering Steps")
 
     logger.info("PROCESS ENDED SUCESSFULLY")

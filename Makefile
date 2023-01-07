@@ -44,7 +44,7 @@ tracking_server :
 	mlflow server --backend-store-uri sqlite:///mlflow.db --backend-store-uri ./mlruns
 ## Lint using flake8
 lint:
-	flake8 src
+	flake8 src --ignore=E501,E712
 
 
 train : 

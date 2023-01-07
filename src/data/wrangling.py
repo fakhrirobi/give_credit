@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 import logging
 import sys
 
@@ -45,7 +44,7 @@ TEST_COLUMNS = [
 ]
 
 
-def wrangling_data(data:pd.DataFrame,params_path:str,training_req:bool=False):
+def wrangling_data(data: pd.DataFrame, params_path: str, training_req: bool = False):
     """_summary_
 
     Args:
@@ -59,35 +58,38 @@ def wrangling_data(data:pd.DataFrame,params_path:str,training_req:bool=False):
     logger.info("PROCESS STARTED")
     try:
         # the problem we face with the data wrangling is only with the missing values
-        
+
         data = data.drop_duplicates()
-        
+
         data["MonthlyIncome"] = data["MonthlyIncome"].fillna(
             data["MonthlyIncome"].median()
         )
         data["NumberOfDependents"] = data["NumberOfDependents"].fillna(
             data["NumberOfDependents"].mode()[0]
         )
-        
-        data = data[TRAIN_COLUMNS] if training_req==True else  data[TEST_COLUMNS]
-        print(data.isna().any())
-        for col in data.columns : 
-            if data[col].isna().any() == True : 
-                raise ValueError(f'During Data Wrangling There is Missing Value on Columns : {col}.Fix the pipeline by adding imputer / imputation strategy ') 
-        
 
-        
-        
+        data = data[TRAIN_COLUMNS] if training_req == True else data[TEST_COLUMNS]
+        for col in data.columns:
+            if data[col].isna().any() == True:
+                raise ValueError(
+                    f"During Data Wrangling There is Missing Value on Columns : {col}.Fix the pipeline by adding imputer / imputation strategy "
+                )
+
         # assert that train data contain certain columns
-        if training_req==True : 
-            if "SeriousDlqin2yrs" not in data.columns.tolist() :
-                raise AssertionError("Train Columns Doesnot contains TARGET Column : SeriousDlqin2yrs")
+        if training_req == True:
+            if "SeriousDlqin2yrs" not in data.columns.tolist():
+                raise AssertionError(
+                    "Train Columns Doesnot contains TARGET Column : SeriousDlqin2yrs"
+                )
             return data
-        validation_features.validate_wrangling_output_col(data=data,params_path=params_path)
+        validation_features.validate_wrangling_output_col(
+            data=data, params_path=params_path
+        )
         return data
-        
+
     except BaseException as error:
-        logger.exception(f"Process Encountered Errot at Data Wrangling Process : {error}")
+        logger.exception(
+            f"Process Encountered Errot at Data Wrangling Process : {error}"
+        )
 
     logger.info("PROCESS ENDED SUCESSFULLY")
-
