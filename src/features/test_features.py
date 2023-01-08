@@ -40,5 +40,6 @@ def test_feature_engineering_data(data, expected_output):
         isinstance(
             feature_eng.feature_engineering_process(data, params_path=PARAMS_PATH),
             pd.DataFrame,
-        ) == expected_output
-    )
+        )
+        == expected_output
+    ), f"Output : {feature_eng.feature_engineering_process(data, params_path=PARAMS_PATH)}"

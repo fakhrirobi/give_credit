@@ -50,8 +50,12 @@ lint:
 train : 
 	$(PYTHON_INTERPRETER) src/models/train_model.py  --experiment_name=$(EXP_NAME) --training_data_path=$(TRAINING_PATH) --config_path=$(PARAM_PATH)
 
-predict_batches : 
+predict_batches_sample : 
 	$(PYTHON_INTERPRETER) src/models/predict_model.py  batch_inference --file_path=../give_me_credit/data/processed/test_processed.csv
+
+predict_single_sample : 
+	$(PYTHON_INTERPRETER) src/models/predict_model.py  batch_inference --file_path=../give_me_credit/data/processed/test_processed.csv
+
 
 ## Upload Data to S3
 sync_data_to_s3:

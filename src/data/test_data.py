@@ -47,6 +47,7 @@ def test_wrangling_data(data, training_req, expected_output):
             wrangling.wrangling_data(
                 data, training_req=training_req, params_path=PARAMS_PATH
             ),
-            pd.DataFrame,
-        ) == expected_output
-    )
+            pd.core.frame.DataFrame,
+        )
+        == expected_output
+    ), f"Output : {wrangling.wrangling_data(data, training_req=training_req, params_path=PARAMS_PATH)}"

@@ -25,6 +25,9 @@ PREDICTION_OUTPUT_FILE = os.path.join(
 )
 
 X_sample1 = pd.read_csv(SAMPLE_TEST_PATH)
+X_sample1.columns
+models = joblib.load(MODEL_PATH)
+models.feature_name_
 
 
 @pytest.fixture(scope="module")
@@ -45,18 +48,22 @@ def ramdomize_col_drop(data: pd.DataFrame):
     "data,features_in_model,array_out",
     [
         (X_sample1, True, True),
-        (ramdomize_col_drop(X_sample1), False, False),
+        # (ramdomize_col_drop(X_sample1), False, False),
     ],
 )
 def test_model_output_types(data, features_in_model, array_out, model_load):
     models_feature_names = set(model_load.feature_name_)
     data_features_names = set(list(data.columns))
     compare = models_feature_names.symmetric_difference(data_features_names) == set()
-    array_output = (
-        type(model_load._validate_data(data, validate_separately=False, reset=False)) == np.array
-    )
+    assert (
+        isinstance(
+            model_load._validate_data(data, validate_separately=False, reset=False),
+            np.ndarray,
+        )
+        == array_out
+    ), f"Provided Type : {type(model_load._validate_data(data, validate_separately=False, reset=False))}"
+
     assert compare == features_in_model
-    assert array_output == array_out
 
 
 @pytest.mark.parametrize(

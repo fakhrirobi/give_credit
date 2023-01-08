@@ -39,11 +39,13 @@ Project Organization
     │   │   └── make_dataset.py
     │   │
     │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   │   └── feature_eng.py
+    │   │   └── validation_features.py <- 
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py
+    │   │   ├── predict_model_batch.py <- to generate prediction batches (.csv) file 
+    │   │   ├── predict_model_single.py <- to generate prediction on single inference (CLI)
     │   │   └── train_model.py
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
@@ -55,3 +57,33 @@ Project Organization
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+Main Functionality 
+------------
+
+Introduction 
+
+### 1. Preparing Dataset 
+    ```
+
+    ```
+
+### 2. Training Model 
+    ```
+
+    ```
+
+
+### 3. Hyperparameter Tuning
+    ```
+
+    ```
+
+### 4. Inference
+    ```
+
+    ```
+### 5. Tracking Experiment Dashboard 
+    ```
+    make tracking_server
+    ```

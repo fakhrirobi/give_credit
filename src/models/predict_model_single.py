@@ -186,7 +186,10 @@ def single_inference(
     prediction_label = clf_model.predict(feature_generated_data)
     output = {
         "data": input_dictionary,
-        "output": {"proba": prediction_proba, "label": prediction_label},
+        "output": {
+            "proba": prediction_proba.tolist(),
+            "label": prediction_label.tolist(),
+        },
     }
     logger.info("output : ", output)
     return output

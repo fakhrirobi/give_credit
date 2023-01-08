@@ -9,7 +9,7 @@ from datetime import datetime
 from lightgbm import LGBMClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn import metrics
-
+from config.path_config import ROOT_DIR
 import optuna
 
 # set logging mechanism to inform the progress of data wrangling
@@ -38,10 +38,10 @@ def initialize_argparse():
     return args
 
 
-MODEL_BASE_PATH = "give_me_credit/give_me_credit/models/"
+MODEL_BASE_PATH = os.path.join(ROOT_DIR,"models")
 
 
-PROCESSED_BASE_PATH = "../give_me_credit/data/processed/"
+PROCESSED_BASE_PATH = os.path.join(ROOT_DIR,"data","processed")
 TRAINING_PROCESSED_PATH = os.path.join(PROCESSED_BASE_PATH, "training_processed.csv")
 TEST_PROCESSED_PATH = os.path.join(PROCESSED_BASE_PATH, "test_processed.csv")
 
@@ -91,8 +91,8 @@ def objective(trial):
         )
 
         return np.mean(scoring_dict["auc"])
-    except BaseException as error:
-        logger.error("PROCESS TERMINATED : {}".format(str(error)))
+    except BaseException:
+        logger.exception("PROCESS TERMINATED : {}".format(str(error)))
 
 
 if __name__ == "__main__":
@@ -100,14 +100,13 @@ if __name__ == "__main__":
         method_args = initialize_argparse()
 
         timestamp = datetime.now().strftime("%m%d%Y%H%M%S")
-        argument_parser = initialize_argparse()
+        args = initialize_argparse()
         PARAMS_NAME = f"best_params_lgbm_{timestamp}.joblib"
         study = optuna.create_study(direction="maximize")
-        study.optimize(objective, n_trials=100)
+        study.optimize(objective, n_trials=args.num_trials)
         best_params = study.best_params
         joblib.dump(best_params, os.path.join(MODEL_BASE_PATH, PARAMS_NAME))
-        # logger.info(f'Best Params')
-        # logger.info(f'Tuning Process Success Params is in {best_params}')
+
     except BaseException as error:
         print(str(error))
         # logger.error("PROCESS TERMINATED : {}".format(str(error)))
