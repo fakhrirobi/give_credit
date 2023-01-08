@@ -36,6 +36,11 @@ data:
 	--processed_output_path=data/processed/processed_test_forth_exp_tuned.csv \
 	 --experiment_name=fourth_exp_tuned --training_req=False
 ## Delete all compiled Python files
+training_data : 
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py --raw_input_path=data/raw/cs-training.csv \
+	 --interim_output_path=data/interim/interim_training_forth_exp_tuned.csv \
+	 --processed_output_path=data/processed/processed_training_forth_exp_tuned.csv \
+	  --experiment_name=fourth_exp_tuned --training_req=True
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
@@ -46,7 +51,10 @@ tracking_server :
 lint:
 	flake8 src --ignore=E501,E712
 
-
+tuning : 
+	$(PYTHON_INTERPRETER) src/models/param_tuning.py \
+	--experiment_name=tuning_fourth_experiment \
+	--training_data_path=data/processed/processed_training_forth_exp_tuned.csv --num_trials=100 
 train : 
 	$(PYTHON_INTERPRETER) src/models/train_model.py  --experiment_name=$(EXP_NAME) --training_data_path=$(TRAINING_PATH) --config_path=$(PARAM_PATH)
 

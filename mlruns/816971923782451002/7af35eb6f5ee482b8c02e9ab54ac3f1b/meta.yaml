@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/7af35eb6f5ee482b8c02e9ab54ac3f1b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 7af35eb6f5ee482b8c02e9ab54ac3f1b
+run_name: thoughtful-ray-454
+run_uuid: 7af35eb6f5ee482b8c02e9ab54ac3f1b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673201450616
+status: 1
+tags: []
+user_id: unknown

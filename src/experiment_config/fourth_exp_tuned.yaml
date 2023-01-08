@@ -66,5 +66,5 @@ feature_eng_model_input : {age: ['int64','int32','int16','int8','float64','float
    NumberOfDependents : ['int64','int32','int16','int8','float64','float32','float16','float8'],
    LogDebtRatio :  ['int64','int32','int16','int8','float64','float32','float16','float8'],
    LogRevolvingUtilizationOfUnsecuredLines :  ['int64','int32','int16','int8','float64','float32','float16','float8'],
-   LogIncome  : ['int64','int32','int16','int8','float64','float32','float16','float8']}
-
+   LogIncome  : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   SeriousDlqin2yrs : ['int64','int32','int16','int8','float64','float32','float16','float8']}

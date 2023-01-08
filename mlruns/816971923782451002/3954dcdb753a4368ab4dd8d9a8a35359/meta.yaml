@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/3954dcdb753a4368ab4dd8d9a8a35359/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 3954dcdb753a4368ab4dd8d9a8a35359
+run_name: invincible-kite-447
+run_uuid: 3954dcdb753a4368ab4dd8d9a8a35359
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673198160022
+status: 1
+tags: []
+user_id: unknown

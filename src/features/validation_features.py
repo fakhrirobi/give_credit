@@ -67,6 +67,7 @@ def validate_feature_engineering_output_col(
 
     # check dtypes :
     for col in data.columns:
+        print('validation',col)
         reference_dtypes = feature_engineering_output_dtypes.get(col)
         if data[col].dtypes not in reference_dtypes:
             raise ValueError(

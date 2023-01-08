@@ -44,7 +44,8 @@ TEST_COLUMNS = [
 ]
 
 
-def wrangling_data(data: pd.DataFrame, params_path: str, training_req: bool = False):
+
+def wrangling_data(data: pd.DataFrame, params_path: str, training_req: bool):
     """_summary_
 
     Args:
@@ -58,17 +59,22 @@ def wrangling_data(data: pd.DataFrame, params_path: str, training_req: bool = Fa
     logger.info("PROCESS STARTED")
     try:
         # the problem we face with the data wrangling is only with the missing values
-
+        print('wrangling position cols beginning',data.columns)
         data = data.drop_duplicates()
-
         data["MonthlyIncome"] = data["MonthlyIncome"].fillna(
             data["MonthlyIncome"].median()
         )
         data["NumberOfDependents"] = data["NumberOfDependents"].fillna(
             data["NumberOfDependents"].mode()[0]
         )
-
-        data = data[TRAIN_COLUMNS] if training_req == True else data[TEST_COLUMNS]
+        col_arrangement = {
+            "True" : TRAIN_COLUMNS,
+            "False" : TEST_COLUMNS
+        }
+        
+        features_to_take = col_arrangement.get(training_req)
+        data = data.loc[:,features_to_take]
+        print('wrangling position cols',data.columns)
         for col in data.columns:
             if data[col].isna().any() == True:
                 raise ValueError(
@@ -76,7 +82,7 @@ def wrangling_data(data: pd.DataFrame, params_path: str, training_req: bool = Fa
                 )
 
         # assert that train data contain certain columns
-        if training_req == True:
+        if training_req == "True":
             if "SeriousDlqin2yrs" not in data.columns.tolist():
                 raise AssertionError(
                     "Train Columns Doesnot contains TARGET Column : SeriousDlqin2yrs"
@@ -92,4 +98,3 @@ def wrangling_data(data: pd.DataFrame, params_path: str, training_req: bool = Fa
             f"Process Encountered Errot at Data Wrangling Process : {error}"
         )
 
-    logger.info("PROCESS ENDED SUCESSFULLY")

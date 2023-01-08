@@ -47,7 +47,7 @@ def initialize_argparse():
     parser.add_argument(
         "--experiment_name",
         type=str,
-        help="Whether to save model into pickle or not ",
+        help="Experiment name to log ",
         required=True,
     )
     parser.add_argument(
