@@ -54,15 +54,19 @@ lint:
 tuning : 
 	$(PYTHON_INTERPRETER) src/models/param_tuning.py \
 	--experiment_name=tuning_fourth_experiment \
-	--training_data_path=data/processed/processed_training_forth_exp_tuned.csv --num_trials=100 
+	--training_data_path=data/processed/processed_training_forth_exp_tuned.csv --num_trials=10 
 train : 
 	$(PYTHON_INTERPRETER) src/models/train_model.py  --experiment_name=$(EXP_NAME) --training_data_path=$(TRAINING_PATH) --config_path=$(PARAM_PATH)
 
 predict_batches_sample : 
-	$(PYTHON_INTERPRETER) src/models/predict_model.py  batch_inference --file_path=../give_me_credit/data/processed/test_processed.csv
+	$(PYTHON_INTERPRETER) src/models/predict_model_batch.py  \
+	--input_path=data/processed/processed_test_forth_exp_tuned.csv \
+	--output_path=data/prediction/prediction_fixed_test_imputation.csv \
+	--model_path=models/LGBMClassifier_fourth_exp_tuned.joblib
 
 predict_single_sample : 
-	$(PYTHON_INTERPRETER) src/models/predict_model.py  batch_inference --file_path=../give_me_credit/data/processed/test_processed.csv
+	$(PYTHON_INTERPRETER) src/models/predict_model_single.py  \
+	 
 
 
 ## Upload Data to S3
