@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/2da0c54987234888947c227c28769317/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 2da0c54987234888947c227c28769317
+run_name: welcoming-colt-594
+run_uuid: 2da0c54987234888947c227c28769317
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673323493555
+status: 1
+tags: []
+user_id: unknown

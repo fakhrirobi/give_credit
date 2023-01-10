@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/915dd02e535c457ca0a6dd257cb2570f/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 915dd02e535c457ca0a6dd257cb2570f
+run_name: powerful-moth-629
+run_uuid: 915dd02e535c457ca0a6dd257cb2570f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673204488201
+status: 1
+tags: []
+user_id: unknown

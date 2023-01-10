@@ -85,15 +85,6 @@ def begin_cross_validation(X, Y, model, fold):
     return result, np.mean(scoring_dict["auc"])
 
 
-def search_run_or_create_run(experiment_name):
-    if mlflow.search_runs(filter_string=f"={experiment_name}"):
-        run = mlflow.search_runs(
-            filter_string=f"""attributes.run_name = '{experiment_name}'"""
-        )
-        return run
-    else:
-        run = mlflow.start_run(run_name=experiment_name)
-        return run
 
 
 def train_model(training_path, experiment_name, config_path):
@@ -104,11 +95,10 @@ def train_model(training_path, experiment_name, config_path):
         client = MlflowClient()
 
         run = mlflow.start_run(run_name=experiment_name)
-        run = search_run_or_create_run(experiment_name=experiment_name)
+        
         mlflow.set_tracking_uri("http://127.0.0.1:5000")
         # read data
 
-        path_checker.check_is_file(training_path, create_file=False)
         path_checker.csv_extension_checker(training_path)
         mlflow.log_artifact(training_path)
         train_data = pd.read_csv(training_path)
@@ -117,7 +107,6 @@ def train_model(training_path, experiment_name, config_path):
         X = train_data.drop(TARGET, axis=1)
         Y = train_data[TARGET]
         # replace params from yaml_file
-        path_checker.check_is_file(config_path)
         path_checker.yaml_extension_checker(config_path)
         params = (
             load_yaml(config_path)["params"]

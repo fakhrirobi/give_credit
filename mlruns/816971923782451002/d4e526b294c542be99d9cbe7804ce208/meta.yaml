@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/d4e526b294c542be99d9cbe7804ce208/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: d4e526b294c542be99d9cbe7804ce208
+run_name: resilient-sheep-412
+run_uuid: d4e526b294c542be99d9cbe7804ce208
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673203665225
+status: 1
+tags: []
+user_id: unknown

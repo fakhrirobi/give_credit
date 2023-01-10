@@ -28,19 +28,15 @@ requirements: test_environment
 ## Make Dataset
 data: 
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py --raw_input_path=data/raw/cs-training.csv \
-	 --interim_output_path=data/interim/interim_training_forth_exp_tuned.csv \
-	 --processed_output_path=data/processed/processed_training_forth_exp_tuned.csv \
+	 --interim_output_path=data/interim/interim_training_5_exp_tuned.csv \
+	 --processed_output_path=data/processed/processed_training_5_exp_tuned.csv \
 	  --experiment_name=fourth_exp_tuned --training_req=True
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py --raw_input_path=data/raw/cs-test.csv \
-	--interim_output_path=data/interim/interim_test_forth_exp_tuned.csv \
-	--processed_output_path=data/processed/processed_test_forth_exp_tuned.csv \
+	--interim_output_path=data/interim/interim_5_forth_exp_tuned.csv \
+	--processed_output_path=data/processed/processed_5_forth_exp_tuned.csv \
 	 --experiment_name=fourth_exp_tuned --training_req=False
 ## Delete all compiled Python files
-training_data : 
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py --raw_input_path=data/raw/cs-training.csv \
-	 --interim_output_path=data/interim/interim_training_forth_exp_tuned.csv \
-	 --processed_output_path=data/processed/processed_training_forth_exp_tuned.csv \
-	  --experiment_name=fourth_exp_tuned --training_req=True
+
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
@@ -53,10 +49,12 @@ lint:
 
 tuning : 
 	$(PYTHON_INTERPRETER) src/models/param_tuning.py \
-	--experiment_name=tuning_fourth_experiment \
-	--training_data_path=data/processed/processed_training_forth_exp_tuned.csv --num_trials=10 
+	--experiment_name=tuning \
+	--training_data_path=data/processed/processed_training_forth_exp_tuned.csv --num_trials=100
 train : 
-	$(PYTHON_INTERPRETER) src/models/train_model.py  --experiment_name=$(EXP_NAME) --training_data_path=$(TRAINING_PATH) --config_path=$(PARAM_PATH)
+	$(PYTHON_INTERPRETER) src/models/train_model.py  \
+	--experiment_name=exp_5_tuned --training_data_path=data/processed/processed_training_5_exp_tuned.csv \
+	--config_path=src/experiment_config/exp_5_tuned.yaml
 
 predict_batches_sample : 
 	$(PYTHON_INTERPRETER) src/models/predict_model_batch.py  \
@@ -67,12 +65,47 @@ predict_batches_sample :
 predict_single_sample : 
 	$(PYTHON_INTERPRETER) src/models/predict_model_single.py  \
 	 
+run_api : 
+	$(PYTHON_INTERPRETER) src/api/app.py
 
-
+curl_api_sample : 
+	curl -X 'POST' \
+  'http://127.0.0.1:5000/predict_single' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "model_input": [ \
+    { 
+      "customer_id": "ID501",
+      "utilization_rate": 0.5,
+      "age": 20,
+      "number30_59daysdue": 0,
+      "debtratio": 0.35,
+      "monthlyincome": 10000,
+      "numopencredit_loans": 10,
+      "number90dayslate": 3,
+      "numberrealestate_loans": 2,
+      "number60_89daysdue": 20,
+      "numof_dependents": 3 \
+    }, \
+    { 
+      "customer_id": "ID501",
+      "utilization_rate": 0.5,
+      "age": 20,
+      "number30_59daysdue": 0,
+      "debtratio": 0.35,
+      "monthlyincome": 10000,
+      "numopencredit_loans": 10,
+      "number90dayslate": 3,
+      "numberrealestate_loans": 2,
+      "number60_89daysdue": 20,
+      "numof_dependents": 3 \
+    } \
+  ] }'
 ## Upload Data to S3
 sync_data_to_s3:
 ifeq (default,$(PROFILE))
-	aws s3 sync data/ s3://$(BUCKET)/data/
+	aws s3 sync data/ s3://$(BUCKET)/data/app.py
 else
 	aws s3 sync data/ s3://$(BUCKET)/data/ --profile $(PROFILE)
 endif

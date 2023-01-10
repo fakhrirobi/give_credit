@@ -84,7 +84,7 @@ def batch_inference(file_path, output_path, model_path=DEFAULT_MODEL_PATH):
 if __name__ == "__main__":
     args = initialize_argparse()
     batch_inference(
-        input_path=args.input_path,
+        file_path=args.input_path,
         output_path=args.output_path,
         model_path=args.model_path,
     )

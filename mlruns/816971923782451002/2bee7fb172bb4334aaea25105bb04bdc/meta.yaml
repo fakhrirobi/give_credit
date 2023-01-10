@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/2bee7fb172bb4334aaea25105bb04bdc/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 2bee7fb172bb4334aaea25105bb04bdc
+run_name: colorful-shrimp-147
+run_uuid: 2bee7fb172bb4334aaea25105bb04bdc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673202898790
+status: 1
+tags: []
+user_id: unknown

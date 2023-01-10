@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/2c9e3b2dc6f24b488f368d2216f6d3ef/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 2c9e3b2dc6f24b488f368d2216f6d3ef
+run_name: defiant-mole-975
+run_uuid: 2c9e3b2dc6f24b488f368d2216f6d3ef
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673323405413
+status: 1
+tags: []
+user_id: unknown

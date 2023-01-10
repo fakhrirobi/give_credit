@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/cc4c0ab293fb4527b7607c1d13aa33c1/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: cc4c0ab293fb4527b7607c1d13aa33c1
+run_name: languid-turtle-336
+run_uuid: cc4c0ab293fb4527b7607c1d13aa33c1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673204044298
+status: 1
+tags: []
+user_id: unknown

@@ -4,7 +4,7 @@ import os
 import logging
 import joblib
 import sys
-import mlflow
+import mlflow 
 from  mlflow.tracking import MlflowClient
 from mlflow.entities import Metric, Param, RunTag
 import yaml
@@ -54,7 +54,7 @@ def initialize_argparse():
 
 
 
-MODEL_BASE_PATH = os.path.join(ROOT_DIR,"models","tuning_result")
+MODEL_BASE_PATH = os.path.join(ROOT_DIR,"src","models","tuning_result")
 
 
 PROCESSED_BASE_PATH = os.path.join(ROOT_DIR,"data","processed")
@@ -74,6 +74,15 @@ def mlflow_experiment(experiment_name) :
         return client,experiment.to_list()[0]
     return  client,experiment_search_result
 
+def run_study(experiment_name,training_data_path,num_trials) : 
+    client,experiment= mlflow_experiment(experiment_name)
+    run = client.create_run(experiment_id=experiment.experiment_id)
+    func = lambda trial: objective(trial,training_data_path)
+    study = optuna.create_study(direction="maximize")
+    study.optimize(func, n_trials=num_trials)
+    best_params = study.best_params
+    best_auc = study.best_value
+    return best_params,best_auc,client,run
 
 def objective(trial,training_data_path):
     try:
@@ -124,27 +133,21 @@ def objective(trial,training_data_path):
 if __name__ == "__main__":
     try:
         args = initialize_argparse()
-        client,experiment= mlflow_experiment(args.experiment_name)
+
+    
+        
         
         #yaml file for best params
         timestamp = datetime.now().strftime("%m%d%Y%H%M%S")
         PARAMS_NAME = f"best_params_lgbm_{timestamp}.yaml"
         yaml_best_params_file_path = os.path.join(MODEL_BASE_PATH, PARAMS_NAME)
         
-        #create run 
-        run = client.create_run(experiment_id=experiment.experiment_id)
+        best_params,best_auc,client,run = run_study(experiment_name=args.experiment_name,
+                  training_data_path=args.training_data_path,num_trials=args.num_trials
+                )
         tags = {
-            "experiment_name": args.experiment_name,
-            "timestamp": datetime.now().strftime("%m_%d_%Y_%H:%M:%S"),
-        }
-        #create optuna study
-        func = lambda trial: objective(trial, args.training_data_path)
-        study = optuna.create_study(direction="maximize")
-        study.optimize(func, n_trials=args.num_trials)
-        best_params = study.best_params
-        best_auc = study.best_value
-
-        
+        "experiment_name": args.experiment_name,
+        "timestamp": datetime.now().strftime("%m_%d_%Y_%H:%M:%S")}
         val_metrics = [Metric("auc", best_auc, step=1, timestamp=0)]
         logged_params = [Param(p, f"{best_params[p]}") for p in best_params.keys()]
         logged_tags = [RunTag(t, f"{tags[t]}") for t in tags.keys()]
@@ -154,10 +157,10 @@ if __name__ == "__main__":
             params=logged_params,
             tags=logged_tags,
         )
-        
-        
-        yaml.dump(best_params,yaml_best_params_file_path)
-        client.log_artifact(run_id=run.info.run_id,artifact_path=yaml_best_params_file_path)
+
+        with open(yaml_best_params_file_path,'w') as output_path : 
+            yaml.dump(best_params,output_path)
+        client.log_artifact(run.info.run_id,yaml_best_params_file_path)
 
         
     except BaseException:

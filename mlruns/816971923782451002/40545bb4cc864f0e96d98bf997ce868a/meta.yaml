@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/40545bb4cc864f0e96d98bf997ce868a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 40545bb4cc864f0e96d98bf997ce868a
+run_name: fun-stoat-452
+run_uuid: 40545bb4cc864f0e96d98bf997ce868a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673323206102
+status: 1
+tags: []
+user_id: unknown

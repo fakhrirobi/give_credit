@@ -65,11 +65,26 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
 
 ## Expected Product 
 1. Kaggle Submission 
-2. Inference API 
 
+2. Inference API with FastAPI
+---
+## Library/Package Used 
+1. API : 
+   - FastAPI 
+   - pydantic
+2. Tracking  : 
+   - MLFlow 
+3. CLI : 
+   - argparse
+4. Data Processing 
+   - Pandas
+   - Numpy
+5. Modelling 
+   - scikit-learn
+   - lightgbm
 
+---
 ## Project Steps 
-
 ### Data Preprocessing 
     1. Dropping Duplicates 
     2. Filling Missing Values : 
@@ -91,8 +106,10 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
     3. In terms of CV AUC 
         Base () --> After Feature Engineering ()
 ### Model Comparison / Decision 
-    Insert Table Model Comparison 
-    From the Table Above LGBMClassifier yield the best models. 
+![AUC](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/auc_score_5_models.PNG)
+![Fitting Time](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
+
+According to Cross Validated AUC and time to fit the model -> we choose LightGBM as our model and will continue to Hyperparameter Tuning
 ### Hyperparameter Tuning 
     I used optuna package to run some hyperparameter tuning 
     with option 
@@ -114,20 +131,21 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
     ```
         ```
             param = {
-                    "lambda_l1": 2.8611070127189538e05 
-                    "lambda_l2": 0.6807987664418726 
-                    "num_leaves": 9 
-                    "max_depth": 19 
-                    "feature_fraction": 0.5332191589953184 
-                    "bagging_fraction": 0.9238892410770332 
-                    "bagging_freq": 3 
-                    "min_child_samples": 73
-        }
-    With Average 5-Fold CV AUC -> 0.8656. Improvement from untuned models (AUC : x )
+                    "bagging_fraction": 0.8462612247644394
+                    "bagging_freq": 1
+                    "feature_fraction": 0.47645733210236857
+                    "lambda_l1": 1.0570508475331433
+                    "lambda_l2": 1.0897731039221187e-07
+                    "max_depth": 5
+                    "min_child_samples": 205
+                    "num_leaves": 255
+                    }
+        ```
+    With Average 5-Fold CV AUC -> 0.866022. Improvement from untuned models (AUC : 0.864567 )
 
 
 
-    ```
+
 
 
 
@@ -188,48 +206,251 @@ Project Organization
 
 --------
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
-
-
-Findings 
-------------
 
 
 
-## How to Reproduce this Project
-Main Functionality 
-------------
 
-Introduction 
 
-### 1. Preparing Dataset 
+
+## How to Reproduce Machine Learning Training 
+This Repository Aim to track every experimentation (including retraining). Hence each experiment is tracked with mlflow. 
+In order to create experiment. Several step needs to be done 
+
+1. Clone this Project 
+   ```
+   git clone https://github.com/fakhrirobi/give_credit.git
+   cd give_credit
+   ```
+   ---
+2. Prepare the Environment 
+   I recommend to learn the basic of Makefile
+   make command : 
     ```
-
+    make requirements
     ```
-
-### 2. Training Model 
+    or if you have not used makefile
     ```
-
-    ```
-
-
-### 3. Hyperparameter Tuning
-    ```
-
-    ```
-
-### 4. Inference
-    ```
+    python3 -m pip install -U pip setuptools wheel
+	python3 -m pip install -r requirements.txt -->install all dependency
 
     ```
-### 5. Tracking Experiment Dashboard 
+    ---
+3. Create Configuration File(*.yaml)
+   Folder to locate the experiment_config is in [src/experiment_config](https://github.com/fakhrirobi/give_credit/tree/main/src/experiment_config) folder
+   The Contain of Experiment Config are 
+   ```
+    params : --> params for the model we are going to train -> if you want to train base model leave it blank. this params i usually yield from parameter tuning 
+        lambda_l1: 2.8611070127189538e05 
+        lambda_l2: 0.6807987664418726 
+        num_leaves: 9 
+        max_depth: 19 
+        feature_fraction: 0.5332191589953184 
+        bagging_fraction: 0.9238892410770332 
+        bagging_freq: 3 
+        min_child_samples: 73
+
+    feature_engineering :  --> explanation of feature engineering step like new column plus its explanation 
+    LogDebtRatio : {
+        feature_source : DebtRatio,
+        description : 
+                The form log np.log1p(DebtRatio)
+    }
+    LogIncome : {
+        feature_source : MonthlyIncome,
+        description : 
+                The form log np.log1p(MonthlyIncome)
+    }
+    log_RevolvingUtilizationOfUnsecuredLines : {
+        feature_source : RevolvingUtilizationOfUnsecuredLines,
+        description : 
+                The form log np.log1p(RevolvingUtilizationOfUnsecuredLines)
+    }
+
+
+    preprocessing_step : --> explaininig preprocessing step in data wrangling such as imputation 
+        NumberOfDependents : {
+        feature_source : NumberOfDependents,
+        description : 
+                Filling Missing Values based on median value on training data 
+    }
+        MonthlyIncome : {
+        feature_source : MonthlyIncome,
+        description : 
+                Filling Missing Values based on median value on training data 
+    }
+
+    data_wrangling_output_dtypes : --> list of columns name that supposted to be yielded with its acceptable datatypes (for data validation) (required)
+        age: ['int64','int32','int16','int8','float64','float32','float16','float8']
+        NumberOfTime30-59DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8'] 
+        MonthlyIncome : ['int64','int32','int16','int8','float64','float32','float16','float8']
+        NumberOfOpenCreditLinesAndLoans : ['int64','int32','int16','int8','float64','float32','float16','float8']
+        NumberOfTimes90DaysLate: ['int64','int32','int16','int8','float64','float32','float16','float8']
+        NumberRealEstateLoansOrLines : ['int64','int32','int16','int8','float64','float32','float16','float8']
+        NumberOfTime6089DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8']
+        NumberOfDependents : ['int64','int32','int16','int8','float64','float32','float16','float8']
+        DebtRatio :  ['int64','int32','int16','int8','float64','float32','float16','float8']
+        RevolvingUtilizationOfUnsecuredLines :  ['int64','int32','int16','int8','float64','float32','float16','float8']
+
+
+    
+    feature_eng_model_input : --> model input column / feature engineering result and its dtypes(required)
+        {age: ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        NumberOfTime30-59DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        NumberOfOpenCreditLinesAndLoans : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        NumberOfTimes90DaysLate: ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        NumberRealEstateLoansOrLines : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        NumberOfTime6089DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        NumberOfDependents : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        LogDebtRatio :  ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        log_RevolvingUtilizationOfUnsecuredLines :  ['int64','int32','int16','int8','float64','float32','float16','float8'],
+        LogIncome  : ['int64','int32','int16','int8','float64','float32','float16','float8']}
+
+        Tips : The Name of Config file better to be the name of experiment to easier tracking
+
+
+   ```
+   ---
+
+2. Prepare The Dataset 
+   Execute python file in [src/data/make_dataset.py](https://github.com/fakhrirobi/give_credit/tree/main/src/data/make_dataset.py)
+   This process only create single training or test data not both. 
+   This python file needs CLI argument : 
+
+   a. --experiment_name = the name of experiment (make sure its consistent)
+
+   b. --raw_input_path = the source of data (.csv file). Default in  [give_credit/data/raw](https://github.com/fakhrirobi/give_credit/tree/main/data/raw) Folder
+
+   c. --interim_output_path = the output file (.csv) to store wrangled dataset (optional)
+
+   d. --processed_output_path = the processed output file (feature engineered) data and ready for training (modelling) / inference (test_data)
+
+   e. --training_req = wheter or not the process is for creating training data or test data . True means preparing for Training Data. False mean for test data. The difference is that The Training Data Contains Labels.
+
+    The Example can be seen in [Makefile](https://github.com/fakhrirobi/give_credit/blob/main/Makefile) in "data" command. 
+
+    Notes : to change the data wrangling you need to modify in [src/data/wrangling.py](https://github.com/fakhrirobi/give_credit/blob/main/src/data/wrangling.py) the same apply to [feature engineering](https://github.com/fakhrirobi/give_credit/blob/main/src/features/feature_eng.py) processand dont forget to update the experiment_config.yaml
+
+   ---
+
+3. Train the Model 
+    After Preparing The Dataset you can move to the model 
+    to train model you can run the [src/models/train_model.py](https://github.com/fakhrirobi/give_credit/blob/main/src/models/train_model.py)
+
+    This python file needs CLI argument : 
+
+    a. --experiment_name = the name of experiment (make sure its consistent)
+
+    b. --training_path = the source of training datadata (.csv file). Default in  [give_credit/data/processed](https://github.com/fakhrirobi/give_credit/tree/main/data/processed) Folder
+    c. --config_path = The config.yaml file contain information of the process. This file later will be stored and logged as artifact in mlflow. 
+
+    The Trained model willbe stored as {Modelname}_{experiment_name}.joblib file in [give_credit/models](https://github.com/fakhrirobi/give_credit/tree/main/models) folder. 
+
+    The Example can be seen in [Makefile](https://github.com/fakhrirobi/give_credit/blob/main/Makefile) in "training" command. 
+
+    ---
+4. Tune the Model 
+    You can run  [src/models/param_tuning.py](https://github.com/fakhrirobi/give_credit/blob/main/src/models/param_tuning.py)
+
+    This python file needs CLI argument : 
+
+    a. --experiment_name = the name of experiment (make sure its consistent)
+
+    b. --training_data_path = the source of training datadata (.csv file). Default in  [give_credit/data/processed](https://github.com/fakhrirobi/give_credit/tree/main/data/processed) Folder
+    c. --num_trials = Number of study in optuna. usually 100
+
+    After Tuning the Params the tuning properties such as params metric and best_params will be logged to each runned tuning. 
+
+    to access best params in local you can open folder [src/models/tuning_result](https://github.com/fakhrirobi/give_credit/blob/main/src/models/tuning_result). 
+
+    The Example can be seen in [Makefile](https://github.com/fakhrirobi/give_credit/blob/main/Makefile) in "tuning" command. 
+
+    ---
+
+5. Show All Experiment Tracking 
+   in cmd run 
+   ```
+    mlflow server --backend-store-uri sqlite:///mlflow.db --backend-store-uri ./mlruns
+   ```
+   or just run make : 
     ```
     make tracking_server
     ```
+    If after cloned this repository you find all artifact was lost dont be panic. This because mlflow still implement absolute path instead of relative path. To restore it 
+    open [mlruns/0](https://github.com/fakhrirobi/give_credit/tree/main/mlruns/0) open the folder and you will find meta.yml . After that change artifact_uri key from 
+    ```
+    artifact_uri:file:///home/fakhri/pacmann_project/give_credit/mlruns/<some_runid>
+    to 
+    artifact_uri:../give_credit/mlruns/<some_runid>
+    ```
+    and run tracking server again
+
+    ---
+6. Serving on API 
+   I Created an API with FastAPI. Inspired with madewithml example. 
+   The API itself for now only contain /predict_single endpoint.
+   to run the api just run [src/api/app.py](https://github.com/fakhrirobi/give_credit/tree/main/src/api/app.py)
+
+    after run the file check localhost:5000/docs to see detailed documentation. 
+    The API POST method require input 
+    ```
+    {model_input": [
+    {
+      "customer_id": "ID501",
+      "utilization_rate": 0.5,
+      "age": 20,
+      "number30_59daysdue": 0,
+      "debtratio": 0.35,
+      "monthlyincome": 10000,
+      "numopencredit_loans": 10,
+      "number90dayslate": 3,
+      "numberrealestate_loans": 2,
+      "number60_89daysdue": 20,
+      "numof_dependents": 3
+    }]}
+    ```
+
+    and the responses are :
+    ``` 
+    {
+    "message": "OK",
+    "method": "POST",
+    "status-code": 200,
+    "timestamp": "2023-01-11T00:43:21.830087",
+    "url": "http://127.0.0.1:5000/predict_single",
+    "data": [
+        {
+        "data": {
+            "RevolvingUtilizationOfUnsecuredLines": 0.5,
+            "age": 20,
+            "NumberOfTime30-59DaysPastDueNotWorse": 0,
+            "DebtRatio": 0.35,
+            "MonthlyIncome": 10000,
+            "NumberOfOpenCreditLinesAndLoans": 10,
+            "NumberOfTimes90DaysLate": 3,
+            "NumberRealEstateLoansOrLines": 2,
+            "NumberOfTime60-89DaysPastDueNotWorse": 20,
+            "NumberOfDependents": 3,
+            "customer_id": "ID501"
+        },
+        "output": {
+            "proba": [
+            [
+                0.39221000427500563,
+                0.6077899957249944
+            ]
+            ],
+            "label": [
+            1
+            ]
+        }
+        },
+    ```
+    Tips : When Constructing JSON Response if you have inference result such as proba in numpy types convert it as list first cause it wont accept numpy. 
 
 
 
 ## Reference 
 ---
 1. Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei Ye, Tie-Yan Liu. "LightGBM: A Highly Efficient Gradient Boosting Decision Tree". Advances in Neural Information Processing Systems 30 (NIPS 2017), pp. 3149-3157.
-2. 
+2. https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc
+3. Pacmann Materials 
