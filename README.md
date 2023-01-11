@@ -100,11 +100,10 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
         b. LogRevolvingUtilizationOfUnsecuredLines -> log1p(RevolvingUtilizationOfUnsecuredLines)
         c.LogDebtRatio -> log1p(DebtRatio)
     2.Correlation Improvement 
-        a.MonthlyIncome () --> LogIncome()
-        b.RevolvingUtilizationOfUnsecuredLines () --> LogRevolvingUtilizationOfUnsecuredLines()
-        c.DebtRatio() -> LogDebtRatio()
-    3. In terms of CV AUC 
-        Base () --> After Feature Engineering ()
+        a.MonthlyIncome (-0.017151) --> LogIncome(-0.017617)
+        b.RevolvingUtilizationOfUnsecuredLines (-0.001802) --> LogRevolvingUtilizationOfUnsecuredLines(0.178767)
+    2. In terms of CV AUC 
+        Base (0.86458) --> After Feature Engineering (0.86458)
 ### Model Comparison / Decision 
 ![AUC](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/auc_score_5_models.PNG)
 ![Fitting Time](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
@@ -143,10 +142,27 @@ According to Cross Validated AUC and time to fit the model -> we choose LightGBM
         ```
     With Average 5-Fold CV AUC -> 0.866022. Improvement from untuned models (AUC : 0.864567 )
 ## Conclusion 
-![LGBM Feature Importance](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
+We aim to answer which variable contribute more to this model. There are two options to find model feature importance in this case : 
+1. Permutaion Importance 
+2. and for Tree based model usually there is Feature Importance 
+
+Permutaian Importance :
+![Permutation Importance](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/permutation_importance.png)
+
+![Permutation Importance DataFrame](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/mean_importance.PNG)
+
+defined as a decrease in model performance if a single feature value is randomly shuffled. Permutation Importance offer model agnoticness or it doesnot affected by model itself. 
 
 
+Feature Importance (LightGBM) : 
+![Feature Importance](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/LGBM_Feature_Importance.png)
+In Tree Models there is a term about impurity ,which described as probability of misclassification (classification task.). The Decision to split to the next node is based on impurity which can be calculated with gini/entropy / etc. 
+To calculate feature importance we need to calculate Mean Decrease Impurity (MDI). In simple Terms the Feature Importance rank features based on its feature split gain the least impurity. 
 
+However in Feature Importance method if the features contain high cardinality values it will biased the feature importance and feature importance are measured on training statistics and not unseen data. 
+
+We can see the difference between permutation importance and feature importance variable : 
+In Permutation importance LogRevolvingUtilizationofUnsecuredLines will affect the model auc the most if shuffled. On the other hand LogDebtRatio gain the highest feature importance.
 
 
 
