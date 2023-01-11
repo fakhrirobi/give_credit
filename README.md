@@ -142,7 +142,8 @@ According to Cross Validated AUC and time to fit the model -> we choose LightGBM
                     }
         ```
     With Average 5-Fold CV AUC -> 0.866022. Improvement from untuned models (AUC : 0.864567 )
-
+## Conclusion 
+![LGBM Feature Importance](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
 
 
 
@@ -454,3 +455,10 @@ In order to create experiment. Several step needs to be done
 1. Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei Ye, Tie-Yan Liu. "LightGBM: A Highly Efficient Gradient Boosting Decision Tree". Advances in Neural Information Processing Systems 30 (NIPS 2017), pp. 3149-3157.
 2. https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc
 3. Pacmann Materials 
+
+
+## TODO : 
+1. Permutation Importance
+2. ROC AUC Result 
+3. EDA -> Univariate and Bivariate 
+4. 
