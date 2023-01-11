@@ -16,6 +16,7 @@ According to Gartner
 
 Objective the Task is Concluded as Predictive Task.
 
+Delivered Value : Reduce Bad Loans and Minimize Risk 
 
 ---
 Next we are moving to the context of its dataset . 
@@ -108,7 +109,11 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
 ![AUC](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/auc_score_5_models.PNG)
 ![Fitting Time](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
 
-According to Cross Validated AUC and time to fit the model -> we choose LightGBM as our model and will continue to Hyperparameter Tuning
+According to Cross Validated AUC and time to fit the model -> we choose LightGBM as our model and will continue to Hyperparameter Tuning. 
+
+Technically There are two features that makes LightGBM run faster : 
+1. Exclusive Feature Bundling 
+2. Gradient Based One Side Sampling 
 ### Hyperparameter Tuning 
     I used optuna package to run some hyperparameter tuning 
     with option 
@@ -141,7 +146,7 @@ According to Cross Validated AUC and time to fit the model -> we choose LightGBM
                     }
         ```
     With Average 5-Fold CV AUC -> 0.866022. Improvement from untuned models (AUC : 0.864567 )
-## Conclusion 
+## Feature Contribution  
 We aim to answer which variable contribute more to this model. There are two options to find model feature importance in this case : 
 1. Permutaion Importance 
 2. and for Tree based model usually there is Feature Importance 
@@ -470,11 +475,8 @@ In order to create experiment. Several step needs to be done
 ---
 1. Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei Ye, Tie-Yan Liu. "LightGBM: A Highly Efficient Gradient Boosting Decision Tree". Advances in Neural Information Processing Systems 30 (NIPS 2017), pp. 3149-3157.
 2. https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc
-3. Pacmann Materials 
+3. https://scikit-learn.org/stable/modules/permutation_importance.html
+4. https://medium.com/the-artificial-impostor/feature-importance-measures-for-tree-models-part-i-47f187c1a2c3
+5. Pacmann Materials 
 
 
-## TODO : 
-1. Permutation Importance
-2. ROC AUC Result 
-3. EDA -> Univariate and Bivariate 
-4. 
