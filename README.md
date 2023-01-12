@@ -85,7 +85,26 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
    - lightgbm
 
 ---
-## Project Steps 
+
+<details>
+    <summary>Project Steps</summary>
+    <ol>
+    <li>
+      <a href="#data-preprocessing">Data Preprocessing</a>
+    </li>
+    <li>
+      <a href="#exploratory-data-analysis">Exploratory Data Analysis</a>
+    </li>
+    <li>
+      <a href="#feature-engineering">Feature Engineering</a>
+    </li>
+    <li><a href="#model-comparison">Model Comparison / Decision</a></li>
+    <li><a href="#hyperparameter-tuning">Hyperparameter Tuning</a></li>
+    <li><a href="#feature-contribution">Feature Contribution</a></li>
+    <li><a href="#result">Kaggle Submission Result</a></li>
+  </ol>
+</details>
+
 ### Data Preprocessing 
     1. Dropping Duplicates 
     2. Filling Missing Values : 
@@ -93,10 +112,14 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
         b. NumberOfDependents -> Imputed with Mode 
     
 
-### Exploratory Data Analysis
-    Explain All Findings 
+>### Exploratory Data Analysis
+<details>
+    <summary></summary>
+
+</details>
+
 ### Feature Engineering
-    1. Log1p Transformation : 
+    1. Log1p Transformation :   
         a. LogIncome -> log1p(MonthlyIncome)
         b. LogRevolvingUtilizationOfUnsecuredLines -> log1p(RevolvingUtilizationOfUnsecuredLines)
         c.LogDebtRatio -> log1p(DebtRatio)
@@ -105,7 +128,7 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
         b.RevolvingUtilizationOfUnsecuredLines (-0.001802) --> LogRevolvingUtilizationOfUnsecuredLines(0.178767)
     2. In terms of CV AUC 
         Base (0.86458) --> After Feature Engineering (0.86458)
-### Model Comparison / Decision 
+### Model Comparison
 ![AUC](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/auc_score_5_models.PNG)
 ![Fitting Time](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
 
