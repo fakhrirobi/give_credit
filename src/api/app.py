@@ -12,9 +12,10 @@ import uvicorn
 from fastapi import FastAPI, Request, File, UploadFile
 from src.api.schemas import UserCreditData, PredictionInput
 from src.models.predict_model_single import single_inference
+from src.score_card.predict_single_scorecard import single_inference_scorecard
 from config.path_config import ROOT_DIR
 
-MODEL_PATH = os.path.join(ROOT_DIR, "models", "LGBMClassifier_fourth_exp_tuned.joblib")
+MODEL_PATH = os.path.join(ROOT_DIR, "models", "LogisticRegression_scorecard_exp.joblib")
 PARAMS_PATH = os.path.join(
     ROOT_DIR, "src", "experiment_config", "fourth_exp_tuned.yaml"
 )
@@ -82,8 +83,8 @@ def _predict_single(request: Request, user_data: PredictionInput) -> Dict:
         for data in request_data:
             customer_id = data["customer_id"]
             del data["customer_id"]
-            output = single_inference(
-                **data, model_path=MODEL_PATH, params_path=PARAMS_PATH
+            output = single_inference_scorecard(
+                **data, model_path=MODEL_PATH
             )
             output["data"]["customer_id"] = customer_id
             model_output_temp.append(output)
@@ -91,8 +92,8 @@ def _predict_single(request: Request, user_data: PredictionInput) -> Dict:
     else:
         customer_id = request_data["customer_id"]
         del request_data["customer_id"]
-        output = single_inference(
-            **request_data, model_path=MODEL_PATH, params_path=PARAMS_PATH
+        output = single_inference_scorecard(
+            **request_data, model_path=MODEL_PATH
         )
         output["data"]["customer_id"] = customer_id
         model_output_temp.append(output)

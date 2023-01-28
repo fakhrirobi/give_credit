@@ -12,6 +12,7 @@ import argparse
 from datetime import datetime
 from lightgbm import LGBMClassifier
 from sklearn.model_selection import StratifiedKFold
+from sklearn.calibration import CalibratedClassifierCV, CalibrationDisplay
 from sklearn import metrics
 from config.path_config import ROOT_DIR
 import optuna
@@ -89,6 +90,7 @@ def objective(trial,training_data_path):
 
         param = {
             "objective": "binary",
+            "class_weight":"balanced",
             "lambda_l1": trial.suggest_float("lambda_l1", 1e-8, 10.0, log=True),
             "lambda_l2": trial.suggest_float("lambda_l2", 1e-8, 10.0, log=True),
             "num_leaves": trial.suggest_int("num_leaves", 2, 256),
@@ -112,7 +114,8 @@ def objective(trial,training_data_path):
             train_y, val_y = Y.iloc[train_idx], Y.iloc[test_idx]
             # train model
 
-            model = LGBMClassifier(**param)
+            clf_model = LGBMClassifier(**param)
+            model = CalibratedClassifierCV(clf_model, cv=fold, method="isotonic",ensemble=True)
             model.fit(train_x, train_y)
 
             y_pred = model.predict_proba(val_x)

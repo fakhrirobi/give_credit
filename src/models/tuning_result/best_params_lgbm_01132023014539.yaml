@@ -1,0 +1,8 @@
+bagging_fraction: 0.9573127174766932
+bagging_freq: 9
+feature_fraction: 0.5596654037462323
+lambda_l1: 7.978495209566307
+lambda_l2: 2.5461820806489234e-08
+max_depth: 28
+min_child_samples: 96
+num_leaves: 22
