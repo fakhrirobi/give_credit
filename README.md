@@ -127,8 +127,9 @@ EDA can be found [here](https://github.com/fakhrirobi/give_credit/blob/main/note
    $$ WOE = ln\left(\frac{P(\text{class 0 (non events) outcome})}{P(\text{class 1 (events)outcome})}\right) $$
    
 
-    Explanation : 
-    WOE of a bin from a feature is calculated by calculating the log of distribution of of non events divided by events in a bin from a feature .The context of distribution is from all available bin in the features. 
+Explanation : 
+
+WOE of a bin from a feature is calculated by calculating the log of distribution of of non events divided by events in a bin from a feature .The context of distribution is from all available bin in the features. 
 
     Python Implementation : 
 
