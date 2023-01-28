@@ -131,7 +131,7 @@ EDA can be found [here](https://github.com/fakhrirobi/give_credit/blob/main/note
     WOE of a bin from a feature is calculated by calculating the log of distribution of of non events divided by events in a bin from a feature .The context of distribution is from all available bin in the features. 
 
     Python Implementation : 
-    
+
     ```
     def create_woe_reference(feature,binned_data) :
         crosstab_data = (pd.crosstab(binned_data[feature],
@@ -444,41 +444,41 @@ In order to create experiment. Several step needs to be done
 
     and the responses are :
     ``` 
-{
-  "message": "OK",
-  "method": "POST",
-  "status-code": 200,
-  "timestamp": "2023-01-29T01:18:56.963103",
-  "url": "http://127.0.0.1:5000/predict_single",
-  "data": [
     {
-      "data": {
-        "RevolvingUtilizationOfUnsecuredLines": 0.5,
-        "age": 20,
-        "NumberOfTime30-59DaysPastDueNotWorse": 0,
-        "DebtRatio": 0.35,
-        "MonthlyIncome": 10000,
-        "NumberOfOpenCreditLinesAndLoans": 10,
-        "NumberOfTimes90DaysLate": 3,
-        "NumberRealEstateLoansOrLines": 2,
-        "NumberOfTime60-89DaysPastDueNotWorse": 20,
-        "NumberOfDependents": 3,
-        "customer_id": "ID501"
-      },
-      "output": {
-        "proba": [
-          [
-            0.04816276206531589,
-            0.9518372379346841
-          ]
-        ],
-        "label": [
-          1
-        ],
-        "credit_score": 544.1228794036768,
-        "accept_credit": "Approved"
-      }
-    },,
+    "message": "OK",
+    "method": "POST",
+    "status-code": 200,
+    "timestamp": "2023-01-29T01:18:56.963103",
+    "url": "http://127.0.0.1:5000/predict_single",
+    "data": [
+        {
+        "data": {
+            "RevolvingUtilizationOfUnsecuredLines": 0.5,
+            "age": 20,
+            "NumberOfTime30-59DaysPastDueNotWorse": 0,
+            "DebtRatio": 0.35,
+            "MonthlyIncome": 10000,
+            "NumberOfOpenCreditLinesAndLoans": 10,
+            "NumberOfTimes90DaysLate": 3,
+            "NumberRealEstateLoansOrLines": 2,
+            "NumberOfTime60-89DaysPastDueNotWorse": 20,
+            "NumberOfDependents": 3,
+            "customer_id": "ID501"
+        },
+        "output": {
+            "proba": [
+            [
+                0.04816276206531589,
+                0.9518372379346841
+            ]
+            ],
+            "label": [
+            1
+            ],
+            "credit_score": 544.1228794036768,
+            "accept_credit": "Approved"
+        }
+        },,
     ```
     Tips : When Constructing JSON Response if you have inference result such as proba in numpy types convert it as list first cause it wont accept numpy. 
 
