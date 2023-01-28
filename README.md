@@ -271,6 +271,7 @@ $$Offset = 537.1228794036768 $$
 
 
 Our Final Score Scaling 
+
 $$ Score = 537.1228794036768 + 28.8539 * \ln(odds) $$ 
 
 
