@@ -260,6 +260,7 @@ Offset -> Base Score
 We need to define the Offset and Factor. 
 
 In score 650 i want odds to be 50: 1 and double every additional 20 points 
+
 $$ factor = 20 / \ln(2) $$
 $$ factor = 28.8539 $$
 
