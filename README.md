@@ -66,8 +66,8 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
 
 ## Expected Product 
 1. Kaggle Submission 
-
 2. Inference API with FastAPI
+3. Credit Scorecard
 ---
 ## Library/Package Used 
 1. API : 
@@ -85,9 +85,9 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
    - lightgbm
 
 ---
-
+## Project Steps
 <details>
-    <summary>Project Steps</summary>
+    <summary></summary>
     <ol>
     <li>
       <a href="#data-preprocessing">Data Preprocessing</a>
@@ -112,63 +112,213 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
         b. NumberOfDependents -> Imputed with Mode 
     
 
->### Exploratory Data Analysis
+### Exploratory Data Analysis
 <details>
     <summary></summary>
+    <ol>
+        <li>
+        <a>Target Class</a>
+        <p>Mostly Label 0 with percentage of roughly 93.3% and the rest is label 1 </p>
+        <image>      </image>
+        </li>
+        <li>
+        <a>RevolvingUtilizationofUnsecuredLines</a>
+        <p>Mostly Label 0 with percentage of roughly 93.3% and the rest is label 1 </p>
 
+        </li>
+    </ol>
 </details>
 
 ### Feature Engineering
-    1. Log1p Transformation :   
-        a. LogIncome -> log1p(MonthlyIncome)
-        b. LogRevolvingUtilizationOfUnsecuredLines -> log1p(RevolvingUtilizationOfUnsecuredLines)
-        c.LogDebtRatio -> log1p(DebtRatio)
-    2.Correlation Improvement 
-        a.MonthlyIncome (-0.017151) --> LogIncome(-0.017617)
-        b.RevolvingUtilizationOfUnsecuredLines (-0.001802) --> LogRevolvingUtilizationOfUnsecuredLines(0.178767)
-    2. In terms of CV AUC 
-        Base (0.86458) --> After Feature Engineering (0.86458)
-### Model Comparison
-![AUC](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/auc_score_5_models.PNG)
-![Fitting Time](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/fitting_time.PNG)
-
-According to Cross Validated AUC and time to fit the model -> we choose LightGBM as our model and will continue to Hyperparameter Tuning. 
-
-Technically There are two features that makes LightGBM run faster : 
-1. Exclusive Feature Bundling 
-2. Gradient Based One Side Sampling 
-### Hyperparameter Tuning 
-    I used optuna package to run some hyperparameter tuning 
-    with option 
-
-    ```
-            param = {
-            "objective": "binary", --> our task is binary classification
-            "lambda_l1": trial.suggest_float("lambda_l1", 1e-8, 10.0, log=True), --> L1 Regularization 
-            "lambda_l2": trial.suggest_float("lambda_l2", 1e-8, 10.0, log=True), --> L2 Regularization 
-            "num_leaves": trial.suggest_int("num_leaves", 2, 256), --> number of maximal leaves (sum of all leaf)
-            "max_depth": trial.suggest_int("max_depth", 2, 30), --> max depth of tree
-            "feature_fraction": trial.suggest_float("feature_fraction", 0.2, 1.0),
-            "bagging_fraction": trial.suggest_float("bagging_fraction", 0.2, 1.0),
-            "bagging_freq": trial.suggest_int("bagging_freq", 1, 10),
-            "min_child_samples": trial.suggest_int("min_child_samples", 5, 300), --> minimal sample before splitting into below child 
-        }
-
-
-    ```
+    1. Binning Feature 
+        Since this goal is to create credit scoring we need to use binning in order to calculate weight of evidence . Here is my binning 
         ```
-            param = {
-                    "bagging_fraction": 0.8462612247644394
-                    "bagging_freq": 1
-                    "feature_fraction": 0.47645733210236857
-                    "lambda_l1": 1.0570508475331433
-                    "lambda_l2": 1.0897731039221187e-07
-                    "max_depth": 5
-                    "min_child_samples": 205
-                    "num_leaves": 255
-                    }
+        age_binning = [-math.inf, 20,25,30,35, 40,45, 50,55,60,65, 70, math.inf]
+        dependent_bin = [-math.inf,0,1,2,3,4,5,6,7,8,math.inf]
+        dependent_binning = [0,2,4,5,6,7,8,9,math.inf]
+        binning_late_90days = [-math.inf,0,1,2,3,4,5,6,7,8,9,10,math.inf]
+        binning_late_3059days = [-math.inf,0,1,2,3,4,5,6,7,8,9,10,math.inf]
+        binning_late_6089days = [-math.inf,0,1,2,3,4,5,6,7,8,9,10,math.inf]
+        interval_revolving_rate = [-math.inf,0.000, 0.00342,0.0215,0.0489,0.0954,0.174,0.297,0.468,0.708,0.973,math.inf]
+        debt_ratio_interval = [-math.inf,0.000,0.0144,0.0954,0.165,0.226,0.284,0.346,0.417,0.512,0.684,1.903,math.inf]
+        monthlyincome_interval = [-math.inf,3198.0, 4755.0, 6400.0, 9150.0,math.inf]
+        logmonthlyincome_interval = [-math.inf,0.001, 7.748,8.071,8.294,8.467,8.613,8.764,8.927,9.122,9.365,14.917,math.inf]
+        creditlines_interval  = [-math.inf,1,2,3,4.0,5,6,7,8, 9.0, 12.0,math.inf]
+        realestatelines_interval = [-math.inf,1,2,3,4.0,5,6,7,8, 9.0, 12.0,math.inf]
+
         ```
-    With Average 5-Fold CV AUC -> 0.866022. Improvement from untuned models (AUC : 0.864567 )
+        From the Credit Risk Scorecard Book by Naeem Siddiqi its better to create many bins in order to create diverse credit score. 
+
+    2. After the binning process is done now we are going to calculate Weight of Evidence 
+   
+   $$ WOE = ln\left(\frac{P(\text{class 0 (non events) outcome})}{P(\text{class 1 (events)outcome})}\right) $$
+   
+
+    Interpretation : 
+    WOE of a bin from a feature is calculated by calculating the log of distribution of of non events divided by events in a bin from a feature .The context of distribution is from all available bin in the features. 
+    
+    Python Implementation : 
+    ```
+    def create_woe_reference(feature,binned_data) :
+        crosstab_data = (pd.crosstab(binned_data[feature],
+                    binned_data[TARGET],rownames=[feature], 
+                    colnames=[TARGET])
+                    .reset_index()
+                    )
+        total_0 = np.sum(crosstab_data[0])
+        total_1 = np.sum(crosstab_data[1])
+
+        crosstab_data[0] = crosstab_data[0]/total_0
+        crosstab_data[1] = crosstab_data[1]/total_1
+
+        crosstab_data[f'{feature}_woe'] = np.log(crosstab_data[0]/crosstab_data[1])
+        crosstab_data[f'{feature}_iv'] = (crosstab_data[0]-crosstab_data[1])*crosstab_data[f'{feature}_woe']
+        
+        temp  = {}
+        for x,y,z in zip (crosstab_data[feature],
+                    crosstab_data[f'{feature}_woe'],crosstab_data[f'{feature}_iv']
+                    ) : 
+            
+            temp[x] = {'woe':y,'iv':z}
+
+        return temp
+
+    WoE of each features 
+
+    {'bin_age': {'(20.0, 25.0]': {'woe': -0.5029778008571553,
+   'iv': 0.006114302046664361},
+  '(25.0, 30.0]': {'woe': -0.5744835047352527, 'iv': 0.02306912293486296},
+  '(30.0, 35.0]': {'woe': -0.44273113180112517, 'iv': 0.01834339827340103},
+  '(35.0, 40.0]': {'woe': -0.29524942339237314, 'iv': 0.009538179102773575},
+  '(40.0, 45.0]': {'woe': -0.21493823443427776, 'iv': 0.005784051013270645},
+  '(45.0, 50.0]': {'woe': -0.1728852313034842, 'iv': 0.00420029323227334},
+  '(50.0, 55.0]': {'woe': -0.035912776219466286, 'iv': 0.00015882672214590274},
+  '(55.0, 60.0]': {'woe': 0.2342845364331494, 'iv': 0.0055225069026100795},
+  '(60.0, 65.0]': {'woe': 0.532489628459634, 'iv': 0.023401830509758165},
+  '(65.0, 70.0]': {'woe': 0.926085919972863, 'iv': 0.03939504116655464},
+  '(70.0, inf]': {'woe': 1.0603505244294575, 'iv': 0.07594171159791153}},
+ 'bin_NumberOfDependents': {'(-inf, 0.0]': {'woe': 0.16192507634701706,
+   'iv': 0.013369760082315225},
+  '(0.0, 1.0]': {'woe': -0.06715983128081378, 'iv': 0.0009445195622924607},
+  '(1.0, 2.0]': {'woe': -0.17974735201038614, 'iv': 0.005192668410109127},
+  '(2.0, 3.0]': {'woe': -0.2955551702197531, 'iv': 0.007127557982724367},
+  '(3.0, 4.0]': {'woe': -0.4437687564578963, 'iv': 0.005226408948367431},
+  '(4.0, 5.0]': {'woe': -0.35018591238339003, 'iv': 0.0008082808157530725},
+  '(5.0, 6.0]': {'woe': -0.7075605240085275, 'iv': 0.0008454878573382016},
+  '(6.0, 7.0]': {'woe': -0.5031744770304708, 'iv': 0.00012335752382213716},
+  '(7.0, 8.0]': {'woe': -0.30472353830663257, 'iv': 1.985183244125116e-05},
+  '(8.0, inf]': {'woe': inf, 'iv': inf}},
+ 'bin_NumberOfTimes90DaysLate': {'(-inf, 0.0]': {'woe': 0.36826452497339185,
+   'iv': 0.10946953257943327},
+  '(0.0, 1.0]': {'woe': -1.9163035436697873, 'iv': 0.28414139377024417},
+  '(1.0, 2.0]': {'woe': -2.602176028074158, 'iv': 0.17418594164224596},
+  '(10.0, inf]': {'woe': -2.9061640043505843, 'iv': 0.04088154963694475},
+  '(2.0, 3.0]': {'woe': -2.8871122161803795, 'iv': 0.09973053825813732},
+  '(3.0, 4.0]': {'woe': -3.369448683347575, 'iv': 0.06051917157990356},
+  '(4.0, 5.0]': {'woe': -3.141391117230936, 'iv': 0.021617744583479016},
+  '(5.0, 6.0]': {'woe': -2.9174635596045175, 'iv': 0.010266794560591659},
+  '(6.0, 7.0]': {'woe': -3.9423096980330183, 'iv': 0.009108444717117605},
+  '(7.0, 8.0]': {'woe': -2.943780867921891, 'iv': 0.0024207838838483384},
+  '(8.0, 9.0]': {'woe': -3.906591615430939, 'iv': 0.005221772929749199},
+  '(9.0, 10.0]': {'woe': -3.5235993631748332, 'iv': 0.002120335775445685}},
+ 'bin_NumberOfTime30-59DaysPastDueNotWorse': {'(-inf, 0.0]': {'woe': 0.5262776651202775,
+   'iv': 0.18456054814747894},
+  '(0.0, 1.0]': {'woe': -0.8277866119422927, 'iv': 0.10928381433800137},
+  '(1.0, 2.0]': {'woe': -1.5608458014559794, 'iv': 0.1504715977950691},
+  '(10.0, inf]': {'woe': -2.9268313096081178, 'iv': 0.04019047478385672},
+  '(2.0, 3.0]': {'woe': -1.9734229147774605, 'iv': 0.10619724750313386},
+  '(3.0, 4.0]': {'woe': -2.3760199035220673, 'iv': 0.0718948171949233},
+  '(4.0, 5.0]': {'woe': -2.379218656051143, 'iv': 0.03239343574012651},
+  '(5.0, 6.0]': {'woe': -2.6244030646599783, 'iv': 0.017809589181043153},
+  '(6.0, 7.0]': {'woe': -2.651760393871512, 'iv': 0.0070298878940651885},
+  '(7.0, 8.0]': {'woe': -1.8451685792537815, 'iv': 0.0013486409489439246},
+  '(8.0, 9.0]': {'woe': -2.201843523192514, 'iv': 0.000971389711744192},
+  '(9.0, 10.0]': {'woe': -3.3004558118606235, 'iv': 0.0007883879021730193}},
+ 'bin_NumberOfTime60-89DaysPastDueNotWorse': {'(-inf, 0.0]': {'woe': 0.2740025289064378,
+   'iv': 0.06333198744667347},
+  '(0.0, 1.0]': {'woe': -1.7688631189946284, 'iv': 0.2536348158507391},
+  '(1.0, 2.0]': {'woe': -2.602602740263266, 'iv': 0.12670578496938556},
+  '(10.0, inf]': {'woe': -2.9214239608206145, 'iv': 0.03941837485538247},
+  '(2.0, 3.0]': {'woe': -2.8949907037524594, 'iv': 0.04883748307021512},
+  '(3.0, 4.0]': {'woe': -2.939442466323293, 'iv': 0.01588072441014534},
+  '(4.0, 5.0]': {'woe': -2.7614593111279366, 'iv': 0.0044912092656616345},
+  '(5.0, 6.0]': {'woe': -3.6189095429791585, 'iv': 0.004804151390455038},
+  '(6.0, 7.0]': {'woe': -2.607308631300678, 'iv': 0.0005989743742358782},
+  '(7.0, 8.0]': {'woe': -2.607308631300678, 'iv': 0.0002994871871179391}},
+ 'bin_RevolvingUtilizationOfUnsecuredLines': {'(-inf, 0.0]': {'woe': 0.7679625432486045,
+   'iv': 0.029377983395282914},
+  '(0.0, 0.00342]': {'woe': 1.6060034499854656, 'iv': 0.03966072862244436},
+  '(0.00342, 0.0215]': {'woe': 1.6494639471958061, 'iv': 0.14189219963525201},
+  '(0.0215, 0.0489]': {'woe': 1.5044276736332916, 'iv': 0.1241189283213773},
+  '(0.0489, 0.0954]': {'woe': 1.2023009005609702, 'iv': 0.08884679136798479},
+  '(0.0954, 0.174]': {'woe': 0.8942804199856766, 'iv': 0.05530737389599213},
+  '(0.174, 0.297]': {'woe': 0.6727279233623773, 'iv': 0.034422038897358315},
+  '(0.297, 0.468]': {'woe': 0.20155444717670443, 'iv': 0.0037394774305777793},
+  '(0.468, 0.708]': {'woe': -0.32057996028328106, 'iv': 0.011852141697369695},
+  '(0.708, 0.973]': {'woe': -0.9679317511217411, 'iv': 0.1425434338268058},
+  '(0.973, inf]': {'woe': -1.4180965190526664, 'iv': 0.358356476998304}},
+ 'bin_DebtRatio': {'(-inf, 0.0]': {'woe': -0.33225969611523803,
+   'iv': 0.0037739522300778523},
+  '(0.0, 0.0144]': {'woe': 0.7583820619045673, 'iv': 0.027534931333345204},
+  '(0.0144, 0.0954]': {'woe': 0.04922158486827305,
+   'iv': 0.00023836023229700703},
+  '(0.0954, 0.165]': {'woe': 0.10557668390582804, 'iv': 0.001062772752885419},
+  '(0.165, 0.226]': {'woe': 0.1597210342130207, 'iv': 0.00239770308027819},
+  '(0.226, 0.284]': {'woe': 0.3067087451708338, 'iv': 0.008273253025081433},
+  '(0.284, 0.346]': {'woe': 0.2851806498853937, 'iv': 0.007340693811711259},
+  '(0.346, 0.417]': {'woe': 0.1098449553815002, 'iv': 0.0011529436715332715},
+  '(0.417, 0.512]': {'woe': -0.05093283967246327, 'iv': 0.000265653589081457},
+  '(0.512, 0.684]': {'woe': -0.3107771074332837, 'iv': 0.011087283323248383},
+  '(0.684, 1.903]': {'woe': -0.5927893774329883, 'iv': 0.04569648473470617},
+  '(1.903, inf]': {'woe': -0.5278670896208424, 'iv': 5.369506045673205e-05}},
+ 'bin_MonthlyIncome': {'(-inf, 3198.0]': {'woe': -0.34335544561697623,
+   'iv': 0.027396024218654832},
+  '(3198.0, 4755.0]': {'woe': -0.19915781025325746,
+   'iv': 0.008692144550092365},
+  '(4755.0, 6400.0]': {'woe': 0.012661454453368371,
+   'iv': 3.16701332556103e-05},
+  '(6400.0, 9150.0]': {'woe': 0.25498266145471854, 'iv': 0.011608136487665899},
+  '(9150.0, inf]': {'woe': 0.4554791544000379, 'iv': 0.0343463675044932}},
+ 'bin_NumberOfOpenCreditLinesAndLoans': {'(-inf, 1.0]': {'woe': -1.074965273408164,
+   'iv': 0.06840103955120491},
+  '(1.0, 2.0]': {'woe': -0.3434835281161273, 'iv': 0.005373996525928137},
+  '(12.0, inf]': {'woe': 0.017137113428482297, 'iv': 5.733955494509562e-05},
+  '(2.0, 3.0]': {'woe': -0.16057266248516788, 'iv': 0.0015182887553258184},
+  '(3.0, 4.0]': {'woe': 0.028852153250569335, 'iv': 5.94887038073605e-05},
+  '(4.0, 5.0]': {'woe': 0.024558341592005012, 'iv': 4.982153866511331e-05},
+  '(5.0, 6.0]': {'woe': 0.16770433455060918, 'iv': 0.0023466692358632183},
+  '(6.0, 7.0]': {'woe': 0.19072570795079663, 'iv': 0.002976928386993973},
+  '(7.0, 8.0]': {'woe': 0.33000392910803766, 'iv': 0.008063926381951126},
+  '(8.0, 9.0]': {'woe': 0.11231455535919027, 'iv': 0.000938688860160284},
+  '(9.0, 12.0]': {'woe': 0.11401807473450114, 'iv': 0.002155014380216844}},
+ 'bin_NumberRealEstateLoansOrLines': {'(-inf, 1.0]': {'woe': -0.030651873585237664,
+   'iv': 0.0006775548618829203},
+  '(1.0, 2.0]': {'woe': 0.1936641311490197, 'iv': 0.007564451761504452},
+  '(12.0, inf]': {'woe': -1.390913306976185, 'iv': 0.001036495451307138},
+  '(2.0, 3.0]': {'woe': 0.011661939747842957, 'iv': 5.971295313795687e-06},
+  '(3.0, 4.0]': {'woe': -0.2565519946332669, 'iv': 0.0011086687738968237},
+  '(4.0, 5.0]': {'woe': -0.6879036016253619, 'iv': 0.003012424394735633},
+  '(5.0, 6.0]': {'woe': -0.8756530861423287, 'iv': 0.0025340520240293963},
+  '(6.0, 7.0]': {'woe': -1.0162198575347745, 'iv': 0.0017689164598253847},
+  '(7.0, 8.0]': {'woe': -1.489278256775467, 'iv': 0.0024315087477641477},
+  '(8.0, 9.0]': {'woe': -1.0597461225846654, 'iv': 0.00085875210403469},
+  '(9.0, 12.0]': {'woe': -1.1765625076099537, 'iv': 0.0011100737304696265}}}
+    ```
+## Model Evaluation and Calibration
+
+![Calibration Plot](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/calibration_plot.PNG)
+
+ROC Curve : 
+![Tuned Model ROC Curve](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/roc%20curve.PNG)
+
+Confusion Matrix : 
+![Confusion ](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/confusion%20matrix.png)
+
+
+In this task we use AUC metrics. However Given Confusion Matrix Chart The False Negative still plenty compared to its True Positive.There are several ways i planned to reduce the False Negative since in credit scoring we rather predict false positive than predicting false negative (hidden risk)
+
+
+--- 
 ## Feature Contribution  
 We aim to answer which variable contribute more to this model. There are two options to find model feature importance in this case : 
 1. Permutaion Importance 
@@ -182,20 +332,20 @@ Permutaian Importance :
 defined as a decrease in model performance if a single feature value is randomly shuffled. Permutation Importance offer model agnoticness or it doesnot affected by model itself. 
 
 
-Feature Importance (LightGBM) : 
-![Feature Importance](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/LGBM_Feature_Importance.png)
+Feature Importance : 
+
 In Tree Models there is a term about impurity ,which described as probability of misclassification (classification task.). The Decision to split to the next node is based on impurity which can be calculated with gini/entropy / etc. 
 To calculate feature importance we need to calculate Mean Decrease Impurity (MDI). In simple Terms the Feature Importance rank features based on its feature split gain the least impurity. 
 
 However in Feature Importance method if the features contain high cardinality values it will biased the feature importance and feature importance are measured on training statistics and not unseen data. 
 
-We can see the difference between permutation importance and feature importance variable : 
-In Permutation importance LogRevolvingUtilizationofUnsecuredLines will affect the model auc the most if shuffled. On the other hand LogDebtRatio gain the highest feature importance.
+
+In Permutation importance LogRevolvingUtilizationofUnsecuredLines will affect the model auc the most if shuffled.The Feature Importance gives make sense result since according to [Investopedia Article](https://www.investopedia.com/ask/answers/110614/what-are-differences-between-revolving-credit-and-line-credit.asp) utilization rate impact 30% of credit score.
 
 
 
-## Result 
-![Kaggle Submission](https://raw.githubusercontent.com/fakhrirobi/give_credit/main/assets/best_submission.PNG)
+
+
 
 
 Project Organization
@@ -232,16 +382,18 @@ Project Organization
     │   │
     │   ├── data           <- Scripts to download or generate data
     │   │   └── make_dataset.py
+    │   │   └── wrangling.py
     │   │
     │   ├── features       <- Scripts to turn raw data into features for modeling
     │   │   └── feature_eng.py
-    │   │   └── validation_features.py <- 
+    │   │   └── validation_features.py <-data validation 
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
     │   │   ├── predict_model_batch.py <- to generate prediction batches (.csv) file 
     │   │   ├── predict_model_single.py <- to generate prediction on single inference (CLI)
     │   │   └── train_model.py
+    │   │   └── param_tuning.py -> hyperparameter tuning 
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
@@ -500,6 +652,6 @@ In order to create experiment. Several step needs to be done
 2. https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc
 3. https://scikit-learn.org/stable/modules/permutation_importance.html
 4. https://medium.com/the-artificial-impostor/feature-importance-measures-for-tree-models-part-i-47f187c1a2c3
-5. Pacmann Materials 
+5. https://medium.com/@Sanskriti.Singh/an-emphasis-on-the-minimization-of-false-negatives-false-positives-in-binary-classification-9c22f3f9f73
 
 

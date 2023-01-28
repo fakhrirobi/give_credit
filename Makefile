@@ -36,7 +36,24 @@ data:
 	--processed_output_path=data/processed/processed_5_forth_exp_tuned.csv \
 	 --experiment_name=fourth_exp_tuned --training_req=False
 ## Delete all compiled Python files
+prepare_score_card_data : 
+	$(PYTHON_INTERPRETER) src/score_card/prepare_data.py --raw_input_path=data/raw/cs-training.csv \
+       							   --processed_output_path=data/processed/scorecard_training_processed.csv \
+								   --experiment_name=scorecard_exp --training_req=True \
+								   --interim_output_path=data/interim/scorecard_training_interim.csv
 
+	$(PYTHON_INTERPRETER) src/score_card/prepare_data.py --raw_input_path=data/raw/cs-test.csv \
+								--processed_output_path=scorecard_test_processed.csv \
+								--experiment_name=scorecard_exp --training_req=False \
+								--interim_output_path=data/interim/scorecard_test_interim.csv
+
+train_scorecard : 
+	$(PYTHON_INTERPRETER) src/score_card/train_logistic_model.py --training_data_path=data/processed/scorecard_training_processed.csv \
+                                                                --experiment_name=scorecard_exp
+
+create_scorecard : 
+	$(PYTHON_INTERPRETER) src/score_card/turn_scorecard.py --score_data=data/processed/scorecard_training_processed.csv \
+                                                                --filename=scoring
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
@@ -50,11 +67,11 @@ lint:
 tuning : 
 	$(PYTHON_INTERPRETER) src/models/param_tuning.py \
 	--experiment_name=tuning \
-	--training_data_path=data/processed/processed_training_forth_exp_tuned.csv --num_trials=100
+	--training_data_path=data/processed/processed_training_5_exp_tuned.csv --num_trials=100
 train : 
 	$(PYTHON_INTERPRETER) src/models/train_model.py  \
-	--experiment_name=exp_5_tuned --training_data_path=data/processed/processed_training_5_exp_tuned.csv \
-	--config_path=src/experiment_config/exp_5_tuned.yaml
+	--experiment_name=exp_class_weight --training_data_path=data/processed/processed_training_5_exp_tuned.csv \
+	--config_path=src/experiment_config/exp_class_weight.yaml
 
 predict_batches_sample : 
 	$(PYTHON_INTERPRETER) src/models/predict_model_batch.py  \
@@ -64,6 +81,21 @@ predict_batches_sample :
 
 predict_single_sample : 
 	$(PYTHON_INTERPRETER) src/models/predict_model_single.py  \
+
+predict_single_sample : 
+	$(PYTHON_INTERPRETER) src/score_card/predict_single_scorecard.py \      
+	--utilization_rate=0.5 \
+	--age=20 \
+	
+      "number30_59daysdue": 0,
+      "debtratio": 0.35,
+      "monthlyincome": 10000,
+      "numopencredit_loans": 10,
+      "number90dayslate": 3,
+      "numberrealestate_loans": 2,
+      "number60_89daysdue": 20,
+      "numof_dependents": 3 \
+	--
 	 
 run_api : 
 	$(PYTHON_INTERPRETER) src/api/app.py
