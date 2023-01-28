@@ -107,10 +107,10 @@ This Metrics is suitable for dataset that has unbalanced class (such as fraud / 
 </details>
 
 ### Data Preprocessing 
-    1. Dropping Duplicates 
-    2. Filling Missing Values : 
-        a. MonthlyIncome -> Imputed with Median 
-        b. NumberOfDependents -> Imputed with Mode 
+1. Dropping Duplicates 
+2. Filling Missing Values : 
+   a. MonthlyIncome -> Imputed with Median 
+   b. NumberOfDependents -> Imputed with Mode 
     
 
 ### Exploratory Data Analysis
@@ -129,8 +129,9 @@ EDA can be found [here](https://github.com/fakhrirobi/give_credit/blob/main/note
 
     Explanation : 
     WOE of a bin from a feature is calculated by calculating the log of distribution of of non events divided by events in a bin from a feature .The context of distribution is from all available bin in the features. 
-    
+
     Python Implementation : 
+    
     ```
     def create_woe_reference(feature,binned_data) :
         crosstab_data = (pd.crosstab(binned_data[feature],
