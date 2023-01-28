@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/2da1ac05bdf24159805bc2ac67bcf1cf/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 2da1ac05bdf24159805bc2ac67bcf1cf
+run_name: omniscient-ram-100
+run_uuid: 2da1ac05bdf24159805bc2ac67bcf1cf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673549139513
+status: 1
+tags: []
+user_id: unknown

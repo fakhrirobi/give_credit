@@ -1,0 +1,15 @@
+artifact_uri: ./mlruns/0/1371bb1df14f4b49b55807d9305cff2a/artifacts
+end_time: 1674870401323
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1371bb1df14f4b49b55807d9305cff2a
+run_name: scorecard_exp
+run_uuid: 1371bb1df14f4b49b55807d9305cff2a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674870399440
+status: 3
+tags: []
+user_id: fakhri

@@ -77,7 +77,7 @@ def initialize_argparse():
     return args
 
 
-def apply_scoring(data,scoring_dict,feature_names:list,offset=650) : 
+def apply_scoring(data,scoring_dict,feature_names:list,offset=537.1228794036768) : 
     for feature in feature_names : 
         #create new feature scorer 
         feature_dict = scoring_dict.get(feature)

@@ -1,0 +1,71 @@
+params : 
+  lambda_l1 : 0.11239869068544657
+  lambda_l2 : 0.001897554939730139
+  num_leaves : 119
+  max_depth: 4
+  feature_fraction: 0.5012367716409719
+  bagging_fraction: 0.9153882654275254
+  bagging_freq: 7
+  min_child_samples: 259
+  class_weight : balanced
+
+feature_engineering : 
+  LogDebtRatio : {
+    feature_source : DebtRatio,
+    description : 
+            The form log np.log1p(DebtRatio)
+  }
+  LogIncome : {
+    feature_source : MonthlyIncome,
+    description : 
+            The form log np.log1p(MonthlyIncome)
+  }
+  log_RevolvingUtilizationOfUnsecuredLines : {
+    feature_source : RevolvingUtilizationOfUnsecuredLines,
+    description : 
+            The form log np.log1p(RevolvingUtilizationOfUnsecuredLines)
+  }
+
+
+preprocessing_step : 
+    NumberOfDependents : {
+    feature_source : NumberOfDependents,
+    description : 
+            Filling Missing Values based on median value on training data 
+  }
+    MonthlyIncome : {
+    feature_source : MonthlyIncome,
+    description : 
+            Filling Missing Values based on median value on training data 
+  }
+
+number_dtypes : ['int64','int32','int16','int8','float64','float32','float16','float8']
+
+
+
+
+data_wrangling_output_dtypes : 
+  age: ['int64','int32','int16','int8','float64','float32','float16','float8']
+  NumberOfTime30-59DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8'] 
+  MonthlyIncome : ['int64','int32','int16','int8','float64','float32','float16','float8']
+  NumberOfOpenCreditLinesAndLoans : ['int64','int32','int16','int8','float64','float32','float16','float8']
+  NumberOfTimes90DaysLate: ['int64','int32','int16','int8','float64','float32','float16','float8']
+  NumberRealEstateLoansOrLines : ['int64','int32','int16','int8','float64','float32','float16','float8']
+  NumberOfTime6089DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8']
+  NumberOfDependents : ['int64','int32','int16','int8','float64','float32','float16','float8']
+  DebtRatio :  ['int64','int32','int16','int8','float64','float32','float16','float8']
+  RevolvingUtilizationOfUnsecuredLines :  ['int64','int32','int16','int8','float64','float32','float16','float8']
+
+
+
+feature_eng_model_input : {age: ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   NumberOfTime30-59DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   NumberOfOpenCreditLinesAndLoans : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   NumberOfTimes90DaysLate: ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   NumberRealEstateLoansOrLines : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   NumberOfTime6089DaysPastDueNotWorse : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   NumberOfDependents : ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   LogDebtRatio :  ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   log_RevolvingUtilizationOfUnsecuredLines :  ['int64','int32','int16','int8','float64','float32','float16','float8'],
+   LogIncome  : ['int64','int32','int16','int8','float64','float32','float16','float8']}
+

@@ -195,7 +195,7 @@ def single_inference_scorecard(
     prediction_label = clf_model.predict(feature_generated_data[woe_features])
     credit_score_int = scored_data['score'].squeeze().tolist()
     print('credit score',type(credit_score_int))
-    decision_credit = 'Approved' if scored_data['score'].squeeze() >=649 else 'Rejected' 
+    decision_credit = 'Approved' if scored_data['score'].squeeze() >=531 else 'Rejected' 
     print('credit_decision',decision_credit)
     output = {
         "data": input_dictionary,

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/c44b412e99c34ebe8c79f9a2a14d11b1/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: c44b412e99c34ebe8c79f9a2a14d11b1
+run_name: clumsy-fly-121
+run_uuid: c44b412e99c34ebe8c79f9a2a14d11b1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673544205244
+status: 1
+tags: []
+user_id: unknown

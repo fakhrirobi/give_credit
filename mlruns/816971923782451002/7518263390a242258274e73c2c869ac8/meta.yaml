@@ -1,0 +1,15 @@
+artifact_uri: file:///home/fakhri/pacmann_project/give_credit/mlruns/816971923782451002/7518263390a242258274e73c2c869ac8/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '816971923782451002'
+lifecycle_stage: active
+run_id: 7518263390a242258274e73c2c869ac8
+run_name: masked-midge-955
+run_uuid: 7518263390a242258274e73c2c869ac8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1673544763861
+status: 1
+tags: []
+user_id: unknown

@@ -100,7 +100,7 @@ def create_model_coef_dict(fitted_model,feature_names) :
         reference[x] = y
     return reference
 
-def create_score_card(model_coef_dict,woe_reference,factor=48.7) :
+def create_score_card(model_coef_dict,woe_reference,factor=28.8539) :
     temp = []
     for key in woe_reference : 
         data = pd.DataFrame()
